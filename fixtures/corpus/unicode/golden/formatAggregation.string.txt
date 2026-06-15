@@ -1,0 +1,3 @@
+IntNum: B2:B6
+Text: A1:B1,A2:A6
+CHART(bar)@D1:H10 title="Scores — café/日本語/😀" data=A1:B6 series=[Score] xAxis="Item" yAxis="点数"

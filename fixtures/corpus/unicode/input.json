@@ -1,0 +1,22 @@
+{
+  "rows": [
+    ["Item", "Score"],
+    ["café", "100"],
+    ["日本語", "200"],
+    ["naïve", "300"],
+    ["😀grin", "400"],
+    ["𝐀bold", "500"]
+  ],
+  "origin": { "row": 1, "col": 1 },
+  "charts": [
+    {
+      "name": "scores",
+      "type": "bar",
+      "anchorRange": "D1:H10",
+      "title": "Scores — café/日本語/😀",
+      "dataRanges": ["A1:B6"],
+      "series": ["Score"],
+      "axes": { "x": "Item", "y": "点数" }
+    }
+  ]
+}

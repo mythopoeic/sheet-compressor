@@ -1,0 +1,58 @@
+{
+  "encoding": "anchor-skeleton",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "cells": [
+    {
+      "address": "A1",
+      "value": "Item"
+    },
+    {
+      "address": "B1",
+      "value": "Score"
+    },
+    {
+      "address": "A2",
+      "value": "café"
+    },
+    {
+      "address": "B2",
+      "value": "100"
+    },
+    {
+      "address": "A3",
+      "value": "日本語"
+    },
+    {
+      "address": "B3",
+      "value": "200"
+    },
+    {
+      "address": "A4",
+      "value": "naïve"
+    },
+    {
+      "address": "B4",
+      "value": "300"
+    },
+    {
+      "address": "A5",
+      "value": "😀grin"
+    },
+    {
+      "address": "B5",
+      "value": "400"
+    },
+    {
+      "address": "A6",
+      "value": "𝐀bold"
+    },
+    {
+      "address": "B6",
+      "value": "500"
+    }
+  ]
+}

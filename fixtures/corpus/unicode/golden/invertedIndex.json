@@ -1,0 +1,82 @@
+{
+  "encoding": "inverted-index",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "value": "Item",
+      "ranges": [
+        "A1"
+      ]
+    },
+    {
+      "value": "Score",
+      "ranges": [
+        "B1"
+      ]
+    },
+    {
+      "value": "café",
+      "ranges": [
+        "A2"
+      ]
+    },
+    {
+      "value": "100",
+      "ranges": [
+        "B2"
+      ]
+    },
+    {
+      "value": "日本語",
+      "ranges": [
+        "A3"
+      ]
+    },
+    {
+      "value": "200",
+      "ranges": [
+        "B3"
+      ]
+    },
+    {
+      "value": "naïve",
+      "ranges": [
+        "A4"
+      ]
+    },
+    {
+      "value": "300",
+      "ranges": [
+        "B4"
+      ]
+    },
+    {
+      "value": "😀grin",
+      "ranges": [
+        "A5"
+      ]
+    },
+    {
+      "value": "400",
+      "ranges": [
+        "B5"
+      ]
+    },
+    {
+      "value": "𝐀bold",
+      "ranges": [
+        "A6"
+      ]
+    },
+    {
+      "value": "500",
+      "ranges": [
+        "B6"
+      ]
+    }
+  ]
+}

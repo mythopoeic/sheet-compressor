@@ -1,0 +1,5 @@
+{
+  "id": "unicode",
+  "title": "Unicode coverage: non-BMP + accented characters",
+  "description": "Covers SPEC §7 (token count = UTF-16 code units; an emoji is 2 units) and the JSON sections' UTF-8-literal output rule. Cell values and a chart title include emoji (surrogate pairs), CJK, and Latin accents."
+}
