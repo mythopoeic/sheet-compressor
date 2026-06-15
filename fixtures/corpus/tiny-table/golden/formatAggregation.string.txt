@@ -1,0 +1,3 @@
+IntNum: B2,B4
+FloatNum: C2,C4
+Text: A1:C1,A2,A4

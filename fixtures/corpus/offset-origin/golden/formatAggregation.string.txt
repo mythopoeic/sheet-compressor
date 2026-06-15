@@ -1,0 +1,3 @@
+IntNum: D6,D8
+FloatNum: E6,E8
+Text: C5:E5,C6,C8

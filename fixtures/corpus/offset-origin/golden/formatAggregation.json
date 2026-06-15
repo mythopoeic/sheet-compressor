@@ -1,0 +1,32 @@
+{
+  "encoding": "format-aggregation",
+  "version": 0,
+  "origin": {
+    "row": 5,
+    "col": 3
+  },
+  "groups": [
+    {
+      "type": "IntNum",
+      "ranges": [
+        "D6",
+        "D8"
+      ]
+    },
+    {
+      "type": "FloatNum",
+      "ranges": [
+        "E6",
+        "E8"
+      ]
+    },
+    {
+      "type": "Text",
+      "ranges": [
+        "C5:E5",
+        "C6",
+        "C8"
+      ]
+    }
+  ]
+}

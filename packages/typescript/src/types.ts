@@ -52,6 +52,26 @@ export type AnchorJson = {
   cells: Array<{ address: string; value: string }>;
 };
 
+export type FormatType =
+  | "IntNum"
+  | "FloatNum"
+  | "ScientificNum"
+  | "PercentageNum"
+  | "CurrencyData"
+  | "DateData"
+  | "TimeData"
+  | "YearData"
+  | "EmailData"
+  | "Boolean"
+  | "Text";
+
+export type FormatAggregationJson = {
+  encoding: "format-aggregation";
+  version: 0;
+  origin: Origin;
+  groups: Array<{ type: FormatType; ranges: string[] }>;
+};
+
 export type Encoding<TJson = unknown> = {
   string: string;
   json: TJson;
@@ -61,6 +81,7 @@ export type Encoding<TJson = unknown> = {
 export type CompressResult = {
   encodings: {
     anchor: Encoding<AnchorJson>;
+    formatAggregation: Encoding<FormatAggregationJson>;
   };
   rawBaseline: { tokenEstimate: number };
 };

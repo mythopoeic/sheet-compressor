@@ -10,6 +10,8 @@ export type {
   CompressResult,
   DataType,
   Encoding,
+  FormatAggregationJson,
+  FormatType,
   Grid,
   Origin,
 } from "./types.ts";

@@ -1,0 +1,5 @@
+{
+  "id": "numeric-block",
+  "title": "Numeric-heavy sales table",
+  "description": "Mixed-type ledger: a header row of Text, a left date column, a text item column, an integer Qty column, and a 2-column FloatNum block (Price + Total). Exercises rectangular aggregation across both rows and columns."
+}

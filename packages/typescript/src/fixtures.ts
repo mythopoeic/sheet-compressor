@@ -49,5 +49,8 @@ export const goldenFiles = {
   anchorString: "anchor.string.txt",
   anchorJson: "anchor.json",
   anchorTokens: "anchor.tokenEstimate.txt",
+  formatAggregationString: "formatAggregation.string.txt",
+  formatAggregationJson: "formatAggregation.json",
+  formatAggregationTokens: "formatAggregation.tokenEstimate.txt",
   rawBaselineTokens: "rawBaseline.tokenEstimate.txt",
 } as const;
