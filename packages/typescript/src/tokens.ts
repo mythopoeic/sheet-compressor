@@ -33,9 +33,9 @@ export type CreateTokenCounterOptions = {
 
 /**
  * The TS package's default real-tokenizer counter. Loads the requested
- * `gpt-tokenizer` encoding (an OPTIONAL peer dependency — declared in
- * `package.json` under `optionalDependencies`) and returns a {@link TokenCounter}
- * that calls `countTokens` on it.
+ * `gpt-tokenizer` encoding (declared in `package.json` under
+ * `optionalDependencies` so installs don't fail on hosts that can't ship it)
+ * and returns a {@link TokenCounter} that calls `countTokens` on it.
  *
  * Throws synchronously if `gpt-tokenizer` is not installed, so callers in
  * environments that can't ship it (restricted bundlers, no-tokenizer hosts,
@@ -63,9 +63,9 @@ function loadGptTokenizerEncoding(
     return req(`gpt-tokenizer/encoding/${encoding}`) as GptTokenizerEncoding;
   } catch (cause) {
     throw new Error(
-      "createTokenCounter() requires the optional 'gpt-tokenizer' peer " +
-        "dependency. Install it with `npm install gpt-tokenizer`, or pass a " +
-        "custom tokenCounter to compress().",
+      "createTokenCounter() requires the optional 'gpt-tokenizer' dependency. " +
+        "Install it with `npm install gpt-tokenizer`, or pass a custom " +
+        "tokenCounter to compress().",
       { cause },
     );
   }
