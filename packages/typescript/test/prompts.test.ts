@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import { prompts } from "../src/prompts.ts";
@@ -73,35 +76,36 @@ describe("prompts — SPEC §9 (shared source mirrored into TS)", () => {
       // Mirroring contract: the TS constants MUST equal the canonical files in
       // the repo's top-level prompts/ source. The conformance is byte-level so
       // future language ports can use the same files.
-      const path = require("node:path") as typeof import("node:path");
-      const fs = require("node:fs") as typeof import("node:fs");
-      const promptsRoot = path.join(
+      const promptsRoot = join(
         import.meta.dirname,
         "..",
         "..",
         "..",
         "prompts",
       );
-      const expect_equal = (file: string, value: string): void => {
-        const onDisk = fs.readFileSync(path.join(promptsRoot, file), "utf8");
+      const expectMirrors = (file: string, value: string): void => {
+        const onDisk = readFileSync(join(promptsRoot, file), "utf8");
         expect(value).toBe(onDisk);
       };
-      expect_equal("readers/anchor.md", prompts.readers.anchor);
-      expect_equal(
+      expectMirrors("readers/anchor.md", prompts.readers.anchor);
+      expectMirrors(
         "readers/invertedIndex.md",
         prompts.readers.invertedIndex,
       );
-      expect_equal(
+      expectMirrors(
         "readers/formatAggregation.md",
         prompts.readers.formatAggregation,
       );
-      expect_equal(
+      expectMirrors(
         "tasks/tableRegionDetection.md",
         prompts.tasks.tableRegionDetection,
       );
-      expect_equal("tasks/cellValueLookup.md", prompts.tasks.cellValueLookup);
-      expect_equal("tasks/sheetQA.md", prompts.tasks.sheetQA);
-      expect_equal(
+      expectMirrors(
+        "tasks/cellValueLookup.md",
+        prompts.tasks.cellValueLookup,
+      );
+      expectMirrors("tasks/sheetQA.md", prompts.tasks.sheetQA);
+      expectMirrors(
         "snippets/chartDescriptor.md",
         prompts.snippets.chartDescriptor,
       );
