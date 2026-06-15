@@ -1,0 +1,46 @@
+{
+  "encoding": "anchor-skeleton",
+  "version": 0,
+  "origin": {
+    "row": 5,
+    "col": 3
+  },
+  "cells": [
+    {
+      "address": "C5",
+      "value": "Name"
+    },
+    {
+      "address": "D5",
+      "value": "Qty"
+    },
+    {
+      "address": "E5",
+      "value": "Price"
+    },
+    {
+      "address": "C6",
+      "value": "Apple"
+    },
+    {
+      "address": "D6",
+      "value": "3"
+    },
+    {
+      "address": "E6",
+      "value": "1.50"
+    },
+    {
+      "address": "C8",
+      "value": "Pear"
+    },
+    {
+      "address": "D8",
+      "value": "5"
+    },
+    {
+      "address": "E8",
+      "value": "0.30"
+    }
+  ]
+}

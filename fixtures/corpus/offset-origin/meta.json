@@ -1,0 +1,5 @@
+{
+  "id": "offset-origin",
+  "title": "Same data, origin = C5",
+  "description": "Locks in the rule that A1 addresses respect the sheet origin offset."
+}

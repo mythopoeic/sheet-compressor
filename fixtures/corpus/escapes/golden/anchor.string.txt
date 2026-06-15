@@ -1,0 +1,2 @@
+A1,a\,b|B1,c\|d|C1,e\\f|D1,g\nh\rj\tk
+A2, |C2,\t

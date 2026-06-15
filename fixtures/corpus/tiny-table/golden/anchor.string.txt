@@ -1,0 +1,3 @@
+A1,Name|B1,Qty|C1,Price
+A2,Apple|B2,3|C2,1.50
+A4,Pear|B4,5|C4,0.30

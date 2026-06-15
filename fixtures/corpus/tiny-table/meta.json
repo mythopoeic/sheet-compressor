@@ -1,0 +1,5 @@
+{
+  "id": "tiny-table",
+  "title": "Tiny three-column table",
+  "description": "Smoke-test fixture from SPEC §3.2: 3-column table with one fully-empty row that must be dropped from the anchor encoding."
+}

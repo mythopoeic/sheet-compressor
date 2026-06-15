@@ -1,0 +1,5 @@
+{
+  "id": "escapes",
+  "title": "Delimiter + whitespace escaping",
+  "description": "Covers SPEC §3.2 escape rules: backslash, comma, pipe, newline, carriage return, tab, plus whitespace-only cells that must NOT be treated as empty."
+}

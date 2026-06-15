@@ -1,0 +1,34 @@
+{
+  "encoding": "anchor-skeleton",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "cells": [
+    {
+      "address": "A1",
+      "value": "a,b"
+    },
+    {
+      "address": "B1",
+      "value": "c|d"
+    },
+    {
+      "address": "C1",
+      "value": "e\\f"
+    },
+    {
+      "address": "D1",
+      "value": "g\nh\rj\tk"
+    },
+    {
+      "address": "A2",
+      "value": " "
+    },
+    {
+      "address": "C2",
+      "value": "\t"
+    }
+  ]
+}

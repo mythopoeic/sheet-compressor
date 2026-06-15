@@ -1,0 +1,5 @@
+{
+  "id": "empty",
+  "title": "Empty grid",
+  "description": "An empty grid is valid and produces an empty anchor string and zero tokens."
+}

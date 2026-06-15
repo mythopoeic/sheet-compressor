@@ -1,0 +1,3 @@
+C5,Name|D5,Qty|E5,Price
+C6,Apple|D6,3|E6,1.50
+C8,Pear|D8,5|E8,0.30
