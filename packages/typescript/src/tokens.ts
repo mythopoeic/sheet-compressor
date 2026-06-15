@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import type { TokenCounter } from "./types.ts";
 
 /**
- * v0 heuristic token counter (SPEC §4): `ceil(utf16-code-units / 4)`, with
+ * v0 heuristic token counter (SPEC §7): `ceil(utf16-code-units / 4)`, with
  * `""` → 0. Deterministic, dependency-free, and the shared cross-language
  * baseline every implementation MUST agree on. Real tokenizers are layered on
  * top via {@link createTokenCounter} or any user-supplied
