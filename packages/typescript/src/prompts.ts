@@ -7,13 +7,28 @@
 //
 // To change a prompt, edit the file under `prompts/` — never inline it here.
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
+// Search order for the canonical prompts/ tree:
+//   1. Sibling of src/ — the published-tarball layout. `prepack` copies
+//      `prompts/` into the package and `files` ships it. Without this, a
+//      standalone `npm install sheet-compressor` would lack the prompts and
+//      every prompts.* access would throw ENOENT at import time (issue #19).
+//   2. Three levels up from src/ — the in-repo monorepo layout (the canonical
+//      `prompts/` at the repo root, used during development).
+const PROMPT_ROOTS = [
+  join(import.meta.dirname, "..", "prompts"),
+  join(import.meta.dirname, "..", "..", "..", "prompts"),
+];
+
 function promptsRoot(): string {
-  // src/prompts.ts → packages/typescript/src → ../.. → packages/typescript
-  // → ../.. → repo root → prompts
-  return join(import.meta.dirname, "..", "..", "..", "prompts");
+  for (const dir of PROMPT_ROOTS) {
+    if (existsSync(join(dir, "readers", "anchor.md"))) return dir;
+  }
+  throw new Error(
+    `sheet-compressor: prompts/ not found; searched ${PROMPT_ROOTS.join(", ")}`,
+  );
 }
 
 function read(file: string): string {
