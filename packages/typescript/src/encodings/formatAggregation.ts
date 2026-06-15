@@ -94,15 +94,13 @@ function aggregate(grid: Grid): Rect[] {
   }
   if (numRows === 0 || numCols === 0) return [];
 
-  const types: (FormatType | null)[][] = [];
-  for (let r = 0; r < numRows; r++) {
-    const row = grid.rows[r] ?? [];
-    const typeRow: (FormatType | null)[] = new Array(numCols).fill(null);
-    for (let c = 0; c < numCols; c++) {
-      typeRow[c] = classify(row[c] ?? "");
-    }
-    types.push(typeRow);
-  }
+  const types: (FormatType | null)[][] = Array.from(
+    { length: numRows },
+    (_, r) => {
+      const row = grid.rows[r] ?? [];
+      return Array.from({ length: numCols }, (_, c) => classify(row[c] ?? ""));
+    },
+  );
 
   const claimed: boolean[][] = Array.from({ length: numRows }, () =>
     new Array<boolean>(numCols).fill(false),
@@ -137,8 +135,7 @@ function aggregate(grid: Grid): Rect[] {
       }
 
       for (let rr = r; rr < r + h; rr++) {
-        const cl = claimed[rr]!;
-        for (let cc = c; cc < c + w; cc++) cl[cc] = true;
+        claimed[rr]!.fill(true, c, c + w);
       }
 
       rects.push({
