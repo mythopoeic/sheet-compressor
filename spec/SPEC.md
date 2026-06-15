@@ -480,7 +480,30 @@ Apple | 3 | 1.50
 Pear | 5 | 0.30
 ```
 
-## 8. Conformance
+## 8. File adapter (optional, host-coupled)
+
+The compression core (§§1–7) is a pure function over a `Grid`. As an *optional* convenience each language package additionally ships a thin **adapter** that reads its ecosystem's native spreadsheet file (e.g. `.xlsx`) into the same `Grid` shape — Seam 2 in the PRD. The adapter is host-coupled and explicitly NOT part of the cross-language conformance contract: every port's adapter MAY differ in surface detail, but the `Grid` it produces feeds the same `compress()` core.
+
+### 8.1 Contract
+
+Each adapter exposes a `readSheet(input, options?) → Grid` function. `input` is a path or buffer for the host's file abstraction. `options.sheet` selects a sheet by name (string) or 0-indexed position (number); omitting it picks the first sheet.
+
+The returned `Grid` MUST satisfy:
+
+- `rows[r][c]` is a string for every covered cell. Cells absent from the source file (gaps inside the used range) become `""`.
+- `origin` is the 1-indexed A1 address of `rows[0][0]` in the source sheet — the top-left corner of the sheet's used range (NOT always `A1`). A workbook whose used range starts at `C5` produces `origin = { row: 5, col: 3 }`.
+- `cellMeta[r][c].dataType` is populated for every cell within the used range when the host exposes type info. Gap cells get `"empty"`. A cell carrying a formula collapses to `"formula"` regardless of its evaluated type. The adapter MAY omit `cellMeta` entirely when the source has no type information to surface (e.g. an empty sheet).
+- `charts` echoes embedded chart descriptors in document order using the same `ChartDescriptor` schema as §1. Chart support is best-effort per host — adapters MAY emit a partially-populated descriptor (e.g. `anchorRange` + `type` only) when the source format doesn't carry the optional fields.
+
+### 8.2 Dependency contract
+
+The adapter's underlying spreadsheet library (TypeScript: `xlsx` / SheetJS; Python: `openpyxl`; …) is declared as an OPTIONAL dependency in each package — the pure core MUST be installable without it. Calling `readSheet()` in an environment that lacks the underlying library MUST throw a clear, actionable error that names the missing dependency and points the caller back at building the `Grid` themselves.
+
+### 8.3 Testing the adapter
+
+Adapter tests assert the produced `Grid` directly (rows, origin, cellMeta, charts) against small sample files — NOT the compression output. The pure core is already covered by the cross-language golden corpus (§9); covering the adapter through `compress()` would only re-test what the corpus already does and would couple host concerns to the core's contract.
+
+## 9. Conformance
 
 Every implementation ships a single command (e.g. `npm test` for TypeScript) that:
 

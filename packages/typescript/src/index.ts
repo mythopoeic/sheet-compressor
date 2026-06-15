@@ -1,6 +1,11 @@
 export { compress } from "./compress.ts";
 export { a1, colToLetters } from "./address.ts";
 export {
+  readSheet,
+  type ReadSheetInput,
+  type ReadSheetOptions,
+} from "./adapters/xlsx.ts";
+export {
   keepAllStrategy,
   phase1Strategy,
   resolveStrategy,
