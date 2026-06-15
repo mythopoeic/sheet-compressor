@@ -2,7 +2,7 @@
 
 Language-neutral contract for the `sheet-compressor` library. Every implementation (TypeScript reference, Python, C#, Go, VBA, Office Script) MUST produce byte-identical output for the same input on every fixture in [`fixtures/`](../fixtures).
 
-This is **v0**: the **structural-anchor skeleton**, **inverted-index**, **format-aggregation**, and **chart-descriptor** encodings are specified. Anchor detection sits behind a swappable strategy interface (§3.1) with two built-ins: the Phase-1 grid-only detector (default) and a `keep-all` fallback. Token counting is performed by an injectable counter (§7) that defaults to a shared cross-language heuristic. Chart descriptors render as inline `CHART(...)` tokens (§6) appended to every encoding's string form, and are also echoed in structured form on the result. The Phase-2 styling-aware detector remains a later slice — the per-cell metadata contract already reserves its shape so it can be filled in without breaking changes.
+This is **v0**: the **structural-anchor skeleton**, **inverted-index**, **format-aggregation**, and **chart-descriptor** encodings are specified. Anchor detection sits behind a swappable strategy interface (§3.1) with two built-ins: the Phase-1 grid-only detector (default) and a `keep-all` fallback. Token counting is performed by an injectable counter (§7) that defaults to a shared cross-language heuristic. Chart descriptors render as inline `CHART(...)` tokens (§6) appended to every encoding's string form, and are also echoed in structured form on the result. Every package additionally ships the **prompt templates** in §9, sourced from a single shared `prompts/` tree at the repo root. The Phase-2 styling-aware detector remains a later slice — the per-cell metadata contract already reserves its shape so it can be filled in without breaking changes.
 
 ## 1. Input contract
 
@@ -513,3 +513,55 @@ Every implementation ships a single command (e.g. `npm test` for TypeScript) tha
 4. Fails on any byte-level difference.
 
 Goldens are regenerated from the TypeScript reference implementation via a one-step script (see [`fixtures/README.md`](../fixtures/README.md)). Hand-editing goldens is not supported — change `compress()` and regenerate.
+
+## 9. Prompt templates (shared source)
+
+The library ships **prompt templates** alongside the compression core. They make no LLM calls themselves — they are plain strings a caller pastes into their own model call. Every implementation MUST expose the same set, byte-for-byte identical to the canonical source under [`prompts/`](../prompts) at the repo root.
+
+### 9.1 Canonical layout
+
+```
+prompts/
+  readers/
+    anchor.md
+    invertedIndex.md
+    formatAggregation.md
+  tasks/
+    tableRegionDetection.md
+    cellValueLookup.md
+    sheetQA.md
+  snippets/
+    chartDescriptor.md
+```
+
+- **Readers** explain a single encoding to a model so it can decode the compressed text correctly. One per encoding in §3 / §4 / §5.
+- **Tasks** are ready-made task prompts. They contain `{ENCODING}`, `{ADDRESS}`, and/or `{QUESTION}` placeholders the caller substitutes before sending. Substitution is the caller's job — the templates are emitted verbatim and the placeholder syntax is `{NAME}` so a simple `string.replace("{NAME}", value)` works in every language.
+- **Snippets** are smaller fragments meant to be concatenated into a larger prompt. The `chartDescriptor` snippet teaches the model how to read `CHART(...)` tokens (§6).
+
+### 9.2 Public surface (per language)
+
+Each package MUST expose every prompt above as a constant — name and grouping mirror the directory layout. The TypeScript reference uses:
+
+```ts
+import { prompts } from "sheet-compressor";
+
+prompts.readers.anchor;            // string
+prompts.readers.invertedIndex;
+prompts.readers.formatAggregation;
+prompts.tasks.tableRegionDetection;
+prompts.tasks.cellValueLookup;
+prompts.tasks.sheetQA;
+prompts.snippets.chartDescriptor;
+```
+
+Each string MUST equal the corresponding file under `prompts/` byte-for-byte (including trailing whitespace and newline, exactly as committed). Ports may load at runtime from the file (the TypeScript reference does this) OR embed via a generation step that re-runs from the same source; the test bar is that consumers see byte-equality with `prompts/<group>/<name>.md`.
+
+### 9.3 Mirroring contract
+
+`prompts/` is the single source of truth. To change a prompt:
+
+1. Edit the file under `prompts/`.
+2. If a port embeds rather than loads at runtime, re-run that port's mirror step.
+3. Run that port's test suite, which MUST assert byte-equality between its exposed constants and the on-disk file.
+
+Authored once, mirrored everywhere, drift caught at test time — same shape as the fixture corpus in §8.
