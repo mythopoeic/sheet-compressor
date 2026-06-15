@@ -9,6 +9,9 @@ node_modules/
 .claude/
 .agents/
 .sandcastle/
+# Local patch-package fixes for the gitignored sandcastle tooling (root package.json
+# carries the matching postinstall hook, also untracked) — kept local, not shipped.
+patches/
 
 # Root-level tooling manifests (product packages carry their own under packages/)
 /package.json
