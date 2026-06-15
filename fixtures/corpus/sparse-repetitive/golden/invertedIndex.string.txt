@@ -1,0 +1,10 @@
+A1,Region
+B1,Q1
+C1,Q2
+D1,Q3
+E1,Q4
+A2,North
+B2:D3|E3,ok
+E2|B5:E5,low
+A3,South
+A5,East

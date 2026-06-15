@@ -27,10 +27,26 @@ function main(): void {
       `${JSON.stringify(result.encodings.anchor.json, null, 2)}\n`,
     );
 
+    // invertedIndex.string.txt — NO trailing newline (SPEC §4.4).
+    writeFileSync(
+      join(goldenDir, goldenFiles.invertedIndexString),
+      result.encodings.invertedIndex.string,
+    );
+
+    // invertedIndex.json — 2-space indent + ONE trailing newline (SPEC §4.5).
+    writeFileSync(
+      join(goldenDir, goldenFiles.invertedIndexJson),
+      `${JSON.stringify(result.encodings.invertedIndex.json, null, 2)}\n`,
+    );
+
     // token-estimate files — one integer + "\n".
     writeFileSync(
       join(goldenDir, goldenFiles.anchorTokens),
       `${result.encodings.anchor.tokenEstimate}\n`,
+    );
+    writeFileSync(
+      join(goldenDir, goldenFiles.invertedIndexTokens),
+      `${result.encodings.invertedIndex.tokenEstimate}\n`,
     );
     writeFileSync(
       join(goldenDir, goldenFiles.rawBaselineTokens),

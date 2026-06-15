@@ -1,0 +1,46 @@
+{
+  "encoding": "inverted-index",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "value": "a,b",
+      "ranges": [
+        "A1"
+      ]
+    },
+    {
+      "value": "c|d",
+      "ranges": [
+        "B1"
+      ]
+    },
+    {
+      "value": "e\\f",
+      "ranges": [
+        "C1"
+      ]
+    },
+    {
+      "value": "g\nh\rj\tk",
+      "ranges": [
+        "D1"
+      ]
+    },
+    {
+      "value": " ",
+      "ranges": [
+        "A2"
+      ]
+    },
+    {
+      "value": "\t",
+      "ranges": [
+        "C2"
+      ]
+    }
+  ]
+}

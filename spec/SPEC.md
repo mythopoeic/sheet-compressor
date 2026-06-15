@@ -2,7 +2,7 @@
 
 Language-neutral contract for the `sheet-compressor` library. Every implementation (TypeScript reference, Python, C#, Go, VBA, Office Script) MUST produce byte-identical output for the same input on every fixture in [`fixtures/`](../fixtures).
 
-This is **v0**: only the **structural-anchor skeleton** encoding is specified, and the anchor-detection strategy used here is the deliberately-naive Phase-1 "keep the full grid" policy. The inverted-index and format-aggregation encodings, the smarter anchor strategy, and chart descriptors will be added in later slices — but the input and output **contracts** below already reserve their shape so they can be filled in without breaking changes.
+This is **v0**: the **structural-anchor skeleton** and **inverted-index** encodings are specified. The anchor-detection strategy used here is the deliberately-naive Phase-1 "keep the full grid" policy. The format-aggregation encoding, the smarter anchor strategy, and chart descriptors will be added in later slices — but the input and output **contracts** below already reserve their shape so they can be filled in without breaking changes.
 
 ## 1. Input contract
 
@@ -58,7 +58,7 @@ type ChartDescriptor = {
 type CompressResult = {
   encodings: {
     anchor: Encoding;             // implemented in v0
-    invertedIndex?: Encoding;     // reserved; absent in v0
+    invertedIndex: Encoding;      // implemented in v0
     formatAggregation?: Encoding; // reserved; absent in v0
   };
 
@@ -74,7 +74,7 @@ type Encoding = {
 };
 ```
 
-The result object MUST always include `encodings.anchor` and `rawBaseline`. Other encoding slots are absent (not `null`) when not yet implemented.
+The result object MUST always include `encodings.anchor`, `encodings.invertedIndex`, and `rawBaseline`. Other encoding slots are absent (not `null`) when not yet implemented.
 
 ## 3. Structural-anchor skeleton encoding (v0)
 
@@ -169,7 +169,95 @@ For the first example above:
 
 JSON serialisation in goldens uses **2-space indentation** and a trailing newline; the JSON object key order is exactly as listed in the type above.
 
-## 4. Token counting (v0)
+## 4. Inverted-index encoding (v0)
+
+The inverted-index encoding groups every cell by its raw value and emits the cells that hold each value as a list of A1 ranges. Cells that share a value and form a contiguous rectangle collapse into a single range. This wins big on sparse or highly repetitive sheets, where the anchor skeleton would repeat the same value many times.
+
+### 4.1 Cell selection
+
+The inverted-index input is the same set of non-empty cells the anchor skeleton emits: a cell counts as empty iff its string value is exactly `""`. Whitespace-only strings (`" "`, `"\t"`) are NOT empty and are indexed normally.
+
+### 4.2 Range merging
+
+For each distinct value `v`, the cells holding `v` are collapsed into the minimum-length list of A1 ranges via the following deterministic greedy procedure:
+
+1. Let `S` be the set of (row, col) coordinates of cells with value `v` (absolute, i.e. already offset by `origin`).
+2. Iterate cells of `S` in **row-major order** (rows top-to-bottom, columns left-to-right). For each cell `(r, c)` that has not yet been assigned to a range:
+   1. Find the maximum **width** `w ≥ 1` such that `(r, c), (r, c+1), …, (r, c+w-1)` are all in `S` and unassigned.
+   2. Find the maximum **height** `h ≥ 1` such that for every row `r' ∈ [r, r+h-1]`, the cells `(r', c), (r', c+1), …, (r', c+w-1)` are all in `S` and unassigned.
+   3. Emit the rectangle covering rows `[r, r+h-1]` and columns `[c, c+w-1]`, and mark every cell inside it as assigned.
+
+The "maximum height" search is constrained to the width found in step (i): widening the rectangle further down is not attempted. This keeps the algorithm `O(|S|)` per value and produces the same output regardless of language, at the cost of occasionally splitting an L-shaped or T-shaped region into two rectangles instead of one. It is correct (every cell is covered exactly once) and minimal for rectangular regions.
+
+### 4.3 Range syntax
+
+Each emitted rectangle is rendered as an A1 range:
+
+- A single cell is rendered as just its A1 address — `A1`, not `A1:A1`.
+- A multi-cell rectangle is rendered as `<top-left>:<bottom-right>` — `A1:C1` for a horizontal run, `A1:A5` for a vertical run, `A1:C5` for a 3×5 rectangle.
+
+### 4.4 String form
+
+The string form is a sequence of value groups. Each group is rendered as:
+
+```
+<range1>|<range2>|…|<rangeN>,<escaped-value>
+```
+
+- Ranges within a group are joined with `|`, in the order produced by the merging procedure (top-left rectangle first, row-major).
+- The list of ranges and the value are separated by a single `,`.
+- Groups are joined with `\n`, with **no trailing newline**.
+- Groups are ordered by the **first cell address** (row-major) of the value in the grid: the value whose first cell appears earliest comes first.
+- Value escaping is identical to the anchor encoding (§3.2 rules 1–6). Range tokens contain only `A-Z`, `0-9`, and `:`, so they never need escaping.
+- An all-empty grid produces the empty string.
+
+**Example.** With `origin = { row: 1, col: 1 }` and
+
+```
+rows = [
+  ["X", "X", "" ],
+  ["X", "Y", "Y"],
+  ["",  "Y", "" ],
+]
+```
+
+the string form is:
+
+```
+A1:B1|A2,X
+B2:C2|B3,Y
+```
+
+### 4.5 JSON form
+
+```ts
+type InvertedIndexJson = {
+  encoding: "inverted-index";
+  version: 0;
+  origin: { row: number; col: number };
+  groups: Array<{ value: string; ranges: string[] }>;
+};
+```
+
+`groups` is emitted in the same order as the string form (by first cell address). Within each group, `ranges` is in the same order as the string form. `value` is the **raw, unescaped** cell text.
+
+For the example above:
+
+```json
+{
+  "encoding": "inverted-index",
+  "version": 0,
+  "origin": { "row": 1, "col": 1 },
+  "groups": [
+    { "value": "X", "ranges": ["A1:B1", "A2"] },
+    { "value": "Y", "ranges": ["B2:C2", "B3"] }
+  ]
+}
+```
+
+JSON serialisation in goldens uses **2-space indentation** and a trailing newline; the JSON object key order is exactly as listed in the type above.
+
+## 5. Token counting (v0)
 
 v0 uses one shared **heuristic counter** for both `rawBaseline.tokenEstimate` and each `Encoding.tokenEstimate`. Real tokenizers (tiktoken / gpt-tokenizer / SharpToken / …) will be wired in a later slice via the injectable-counter interface from the PRD; until they land, the heuristic is the only counter and every implementation MUST agree on its output.
 
@@ -191,7 +279,7 @@ Apple | 3 | 1.50
 Pear | 5 | 0.30
 ```
 
-## 5. Conformance
+## 6. Conformance
 
 Every implementation ships a single command (e.g. `npm test` for TypeScript) that:
 

@@ -1,0 +1,64 @@
+{
+  "encoding": "inverted-index",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "value": "Name",
+      "ranges": [
+        "A1"
+      ]
+    },
+    {
+      "value": "Qty",
+      "ranges": [
+        "B1"
+      ]
+    },
+    {
+      "value": "Price",
+      "ranges": [
+        "C1"
+      ]
+    },
+    {
+      "value": "Apple",
+      "ranges": [
+        "A2"
+      ]
+    },
+    {
+      "value": "3",
+      "ranges": [
+        "B2"
+      ]
+    },
+    {
+      "value": "1.50",
+      "ranges": [
+        "C2"
+      ]
+    },
+    {
+      "value": "Pear",
+      "ranges": [
+        "A4"
+      ]
+    },
+    {
+      "value": "5",
+      "ranges": [
+        "B4"
+      ]
+    },
+    {
+      "value": "0.30",
+      "ranges": [
+        "C4"
+      ]
+    }
+  ]
+}

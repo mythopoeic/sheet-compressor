@@ -1,20 +1,7 @@
 import { a1 } from "../address.ts";
 import { estimateTokens } from "../tokens.ts";
 import type { AnchorJson, Encoding, Grid } from "../types.ts";
-
-/**
- * Per SPEC §3.2: backslash first (so later rules' backslashes aren't
- * double-escaped), then the delimiters, then the whitespace controls.
- */
-function escapeValue(v: string): string {
-  return v
-    .replace(/\\/g, "\\\\")
-    .replace(/,/g, "\\,")
-    .replace(/\|/g, "\\|")
-    .replace(/\n/g, "\\n")
-    .replace(/\r/g, "\\r")
-    .replace(/\t/g, "\\t");
-}
+import { escapeValue } from "./escape.ts";
 
 export function encodeAnchor(grid: Grid): Encoding<AnchorJson> {
   const cells: AnchorJson["cells"] = [];

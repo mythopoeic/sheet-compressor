@@ -11,9 +11,12 @@ fixtures/
       input.json     # the Grid (rows + origin + optional cellMeta + charts)
       meta.json      # human-readable: title + description; used by tooling
       golden/
-        anchor.string.txt           # SPEC §3.2 string form, no trailing newline
-        anchor.json                 # SPEC §3.3 JSON form, 2-space indent + trailing newline
-        anchor.tokenEstimate.txt    # integer + trailing newline
+        anchor.string.txt                  # SPEC §3.2 string form, no trailing newline
+        anchor.json                        # SPEC §3.3 JSON form, 2-space indent + trailing newline
+        anchor.tokenEstimate.txt           # integer + trailing newline
+        invertedIndex.string.txt           # SPEC §4.4 string form, no trailing newline
+        invertedIndex.json                 # SPEC §4.5 JSON form, 2-space indent + trailing newline
+        invertedIndex.tokenEstimate.txt    # integer + trailing newline
         rawBaseline.tokenEstimate.txt
 ```
 

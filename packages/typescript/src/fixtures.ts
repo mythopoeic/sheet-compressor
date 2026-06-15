@@ -49,5 +49,8 @@ export const goldenFiles = {
   anchorString: "anchor.string.txt",
   anchorJson: "anchor.json",
   anchorTokens: "anchor.tokenEstimate.txt",
+  invertedIndexString: "invertedIndex.string.txt",
+  invertedIndexJson: "invertedIndex.json",
+  invertedIndexTokens: "invertedIndex.tokenEstimate.txt",
   rawBaselineTokens: "rawBaseline.tokenEstimate.txt",
 } as const;
