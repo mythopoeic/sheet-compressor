@@ -22,3 +22,18 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+
+  python:
+    name: Python conformance
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # The pure core has zero required deps; the conformance suite runs on
+      # stdlib `unittest` alone, so no `pip install` step is needed.
+      - run: python -m unittest discover -s tests -v
