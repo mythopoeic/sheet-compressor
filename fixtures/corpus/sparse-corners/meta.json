@@ -1,0 +1,5 @@
+{
+  "id": "sparse-corners",
+  "title": "Sparse sheet with data in opposite corners",
+  "description": "Exercises Phase-1 pruning: a 20-row x 7-col grid with a tiny header table top-left and a Total/value pair bottom-right. The k-neighborhood window touches the empty interior from both ends; the blank-row/column prune pass should drop it from the kept region."
+}

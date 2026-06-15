@@ -40,9 +40,34 @@ export type Grid = {
   charts?: ChartDescriptor[];
 };
 
+/**
+ * The result of anchor detection: which rows and columns (0-indexed into
+ * `grid.rows`) the active strategy decided to keep. The anchor encoder emits
+ * cells only at `(r, c)` where `r ∈ keptRows` AND `c ∈ keptCols`.
+ */
+export type AnchorDetection = {
+  keptRows: ReadonlySet<number>;
+  keptCols: ReadonlySet<number>;
+};
+
+/**
+ * Pluggable anchor-detection strategy. See SPEC §3.1 for the contract.
+ * v0 ships `keep-all` (legacy no-op) and `phase1` (the default).
+ */
+export type AnchorStrategy = {
+  readonly name: string;
+  detect(grid: Grid): AnchorDetection;
+};
+
+/** Built-in strategy selectors. */
+export type AnchorStrategyName = "keep-all" | "phase1";
+
 export type CompressOptions = {
-  // Reserved for future slices (anchor strategy selection, token counter
-  // injection, etc.). v0 takes no options.
+  /**
+   * Anchor-detection strategy. Pass a built-in name or a custom
+   * `AnchorStrategy`. Defaults to `"phase1"`.
+   */
+  anchorStrategy?: AnchorStrategyName | AnchorStrategy;
 };
 
 export type AnchorJson = {

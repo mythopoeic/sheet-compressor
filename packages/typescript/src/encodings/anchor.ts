@@ -1,6 +1,6 @@
 import { a1 } from "../address.ts";
 import { estimateTokens } from "../tokens.ts";
-import type { AnchorJson, Encoding, Grid } from "../types.ts";
+import type { AnchorDetection, AnchorJson, Encoding, Grid } from "../types.ts";
 
 /**
  * Per SPEC §3.2: backslash first (so later rules' backslashes aren't
@@ -16,14 +16,19 @@ function escapeValue(v: string): string {
     .replace(/\t/g, "\\t");
 }
 
-export function encodeAnchor(grid: Grid): Encoding<AnchorJson> {
+export function encodeAnchor(
+  grid: Grid,
+  detection: AnchorDetection,
+): Encoding<AnchorJson> {
   const cells: AnchorJson["cells"] = [];
   const lines: string[] = [];
 
   for (let r = 0; r < grid.rows.length; r++) {
+    if (!detection.keptRows.has(r)) continue;
     const row = grid.rows[r] ?? [];
     const tokens: string[] = [];
     for (let c = 0; c < row.length; c++) {
+      if (!detection.keptCols.has(c)) continue;
       const value = row[c] ?? "";
       // SPEC §3.1: only literal "" is empty.
       if (value === "") continue;
