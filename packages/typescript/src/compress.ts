@@ -5,12 +5,13 @@ import type { CompressOptions, CompressResult, Grid } from "./types.ts";
 
 export function compress(
   grid: Grid,
-  _options: CompressOptions = {},
+  options: CompressOptions = {},
 ): CompressResult {
+  const tokenCounter = options.tokenCounter ?? estimateTokens;
   return {
     encodings: {
-      anchor: encodeAnchor(grid),
+      anchor: encodeAnchor(grid, tokenCounter),
     },
-    rawBaseline: { tokenEstimate: estimateTokens(vanillaEncode(grid)) },
+    rawBaseline: { tokenEstimate: tokenCounter(vanillaEncode(grid)) },
   };
 }

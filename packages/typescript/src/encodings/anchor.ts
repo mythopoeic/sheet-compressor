@@ -1,6 +1,5 @@
 import { a1 } from "../address.ts";
-import { estimateTokens } from "../tokens.ts";
-import type { AnchorJson, Encoding, Grid } from "../types.ts";
+import type { AnchorJson, Encoding, Grid, TokenCounter } from "../types.ts";
 
 /**
  * Per SPEC §3.2: backslash first (so later rules' backslashes aren't
@@ -16,7 +15,10 @@ function escapeValue(v: string): string {
     .replace(/\t/g, "\\t");
 }
 
-export function encodeAnchor(grid: Grid): Encoding<AnchorJson> {
+export function encodeAnchor(
+  grid: Grid,
+  tokenCounter: TokenCounter,
+): Encoding<AnchorJson> {
   const cells: AnchorJson["cells"] = [];
   const lines: string[] = [];
 
@@ -42,5 +44,5 @@ export function encodeAnchor(grid: Grid): Encoding<AnchorJson> {
     origin: { row: grid.origin.row, col: grid.origin.col },
     cells,
   };
-  return { string, json, tokenEstimate: estimateTokens(string) };
+  return { string, json, tokenEstimate: tokenCounter(string) };
 }
