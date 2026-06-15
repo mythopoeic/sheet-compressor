@@ -129,5 +129,11 @@ export type CompressResult = {
     invertedIndex: Encoding<InvertedIndexJson>;
     formatAggregation: Encoding<FormatAggregationJson>;
   };
+  /**
+   * Echo of `grid.charts` in input order, after CHART(...) tokens have already
+   * been appended into each encoding's `.string` (SPEC §6). Empty array when
+   * `grid.charts` is missing or empty.
+   */
+  charts: ChartDescriptor[];
   rawBaseline: { tokenEstimate: number };
 };

@@ -1,0 +1,23 @@
+{
+  "encoding": "format-aggregation",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "type": "IntNum",
+      "ranges": [
+        "B2:C5"
+      ]
+    },
+    {
+      "type": "Text",
+      "ranges": [
+        "A1:C1",
+        "A2:A5"
+      ]
+    }
+  ]
+}

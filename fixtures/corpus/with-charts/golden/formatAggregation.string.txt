@@ -1,0 +1,4 @@
+IntNum: B2:C5
+Text: A1:C1,A2:A5
+CHART(bar)@E2:I20 title="Sales" data=A1:C5 series=[Revenue,Cost] xAxis="Quarter" yAxis="Amount"
+CHART(pie)@K2:O20 title="Revenue, mix \"FY\"" data=B2:B5

@@ -20,6 +20,7 @@ fixtures/
         formatAggregation.string.txt            # string form, no trailing newline
         formatAggregation.json                  # JSON form, 2-space indent + trailing newline
         formatAggregation.tokenEstimate.txt
+        charts.json                             # SPEC §6.2 echo of grid.charts, 2-space indent + trailing newline
         rawBaseline.tokenEstimate.txt
 ```
 
@@ -36,7 +37,7 @@ Each golden file is byte-comparable. `anchor.string.txt` deliberately has **no t
 }
 ```
 
-`cellMeta` and `charts` MAY be omitted or `null`; v0 ignores them in the output but they are accepted in the input to lock in the contract.
+`cellMeta` MAY be omitted or `null`; v0 ignores it in the output but accepts it to lock in the Phase-2 contract. `charts` MAY be omitted or `null`; when present, each descriptor renders as a `CHART(...)` token appended to every encoding's string form (see SPEC §6) and is echoed verbatim in `charts.json`.
 
 ## meta.json schema
 

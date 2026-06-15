@@ -2,7 +2,7 @@
 
 Language-neutral contract for the `sheet-compressor` library. Every implementation (TypeScript reference, Python, C#, Go, VBA, Office Script) MUST produce byte-identical output for the same input on every fixture in [`fixtures/`](../fixtures).
 
-This is **v0**: the **structural-anchor skeleton**, **inverted-index**, and **format-aggregation** encodings are specified. Anchor detection sits behind a swappable strategy interface (§3.1) with two built-ins: the Phase-1 grid-only detector (default) and a `keep-all` fallback. Token counting is performed by an injectable counter (§6) that defaults to a shared cross-language heuristic. Chart descriptors and the Phase-2 styling-aware detector will be added in later slices — but the input and output **contracts** below already reserve their shape so they can be filled in without breaking changes.
+This is **v0**: the **structural-anchor skeleton**, **inverted-index**, **format-aggregation**, and **chart-descriptor** encodings are specified. Anchor detection sits behind a swappable strategy interface (§3.1) with two built-ins: the Phase-1 grid-only detector (default) and a `keep-all` fallback. Token counting is performed by an injectable counter (§7) that defaults to a shared cross-language heuristic. Chart descriptors render as inline `CHART(...)` tokens (§6) appended to every encoding's string form, and are also echoed in structured form on the result. The Phase-2 styling-aware detector remains a later slice — the per-cell metadata contract already reserves its shape so it can be filled in without breaking changes.
 
 ## 1. Input contract
 
@@ -23,9 +23,9 @@ type Grid = {
   // v0 only reads `dataType`; style flags are reserved for Phase 2.
   cellMeta?: CellMeta[][];
 
-  // OPTIONAL chart descriptors anchored on this sheet.
-  // v0 accepts and round-trips them in the input but does not yet emit them
-  // into any encoding (reserved slot in the output schema).
+  // OPTIONAL chart descriptors anchored on this sheet. v0 renders each one as a
+  // CHART(...) token appended to every encoding's string form (see §6) and
+  // echoes the structured list on `result.charts`.
   charts?: ChartDescriptor[];
 };
 
@@ -62,6 +62,11 @@ type CompressResult = {
     formatAggregation: Encoding;  // implemented in v0 (§5)
   };
 
+  // Echo of `grid.charts` in input order, after CHART(...) tokens have already
+  // been appended into each encoding's `.string` (§6). Empty array when
+  // `grid.charts` is missing or empty.
+  charts: ChartDescriptor[];
+
   // Token estimate for the raw sheet (the un-compressed baseline), so callers
   // can report a compression ratio. v0 uses the documented heuristic counter.
   rawBaseline: { tokenEstimate: number };
@@ -74,7 +79,7 @@ type Encoding = {
 };
 ```
 
-The result object MUST always include `encodings.anchor`, `encodings.invertedIndex`, `encodings.formatAggregation`, and `rawBaseline`.
+The result object MUST always include `encodings.anchor`, `encodings.invertedIndex`, `encodings.formatAggregation`, `charts`, and `rawBaseline`.
 
 ## 3. Structural-anchor skeleton encoding (v0)
 
@@ -382,7 +387,68 @@ type FormatAggregationJson = {
 
 `groups` is in the same canonical type order as the string form, with the same `ranges` strings. An empty grid emits `groups: []`. JSON formatting matches §3.3: 2-space indent + trailing newline; object key order exactly as in the type above.
 
-## 6. Token counting
+## 6. Chart descriptors (v0)
+
+`grid.charts` is an optional list of `ChartDescriptor` objects (§1). Each descriptor renders into a single line-oriented text token; the rendered token block is then appended to every encoding's string form so that a model reading any single encoding sees the charts in context. The structured descriptor list is also echoed on the result for downstream programmatic use.
+
+### 6.1 Rendered token form
+
+```
+CHART(<type>)@<anchorRange>[ title=<qstring>][ data=<r1>,<r2>,…][ series=[<s1>,<s2>,…]][ xAxis=<qstring>][ yAxis=<qstring>]
+```
+
+- `<type>` is the descriptor's `type` verbatim: `bar`, `line`, `pie`, `scatter`, `area`, or `other`.
+- `<anchorRange>` is the descriptor's `anchorRange` verbatim. The spec treats the range as opaque — no normalisation, no validation; whatever the host adapter wrote is what gets rendered.
+- `title`, `xAxis`, `yAxis` are double-quoted strings: `"<escaped>"`. Inside the quotes, `\` → `\\`, `"` → `\"`, `\n` → `\n`, `\r` → `\r`, `\t` → `\t` (the §3.2 control escapes, plus the quote escape).
+- `data=` is the descriptor's `dataRanges` joined with `,` (no spaces). Ranges are emitted bare — the spec assumes A1 ranges containing only `[A-Z0-9:]` and does not escape them.
+- `series=[…]` is the descriptor's `series` names joined with `,` (no spaces) inside square brackets. Each name is escaped: `\` → `\\`, `,` → `\,`, `]` → `\]`, `\n` → `\n`, `\r` → `\r`, `\t` → `\t`. The brackets are part of the syntax even for a single-name list.
+
+**Field order is fixed**: `anchorRange`, then `title`, `data`, `series`, `xAxis`, `yAxis`. Each optional field is omitted entirely (not rendered as an empty value) when the descriptor's source field is `undefined`, or — for `dataRanges` and `series` — when the source array is empty. `axes.x` and `axes.y` are independent: each renders if and only if its own field is set.
+
+The descriptor's `name` is intentionally NOT rendered into the token. It is a developer-facing identifier (for matching descriptors back to source charts), not LLM-facing context.
+
+**Example.** For
+
+```ts
+{ name: "Q1Sales", type: "bar", anchorRange: "B5:F20",
+  title: "Sales", dataRanges: ["A1:D10"], series: ["Q1", "Q2"] }
+```
+
+the rendered token is:
+
+```
+CHART(bar)@B5:F20 title="Sales" data=A1:D10 series=[Q1,Q2]
+```
+
+### 6.2 Block form and integration with encodings
+
+The rendered tokens are joined with `\n`, in the input order of `grid.charts`, with no trailing newline. Call this the **chart block**.
+
+For each of the three encodings (anchor §3, inverted-index §4, format-aggregation §5), the encoding's `string` is extended:
+
+- If the encoding's cell string is non-empty AND the chart block is non-empty: `<cells>\n<chart-block>`.
+- If the encoding's cell string is empty AND the chart block is non-empty: `<chart-block>`.
+- If the chart block is empty: the cell string, unchanged.
+
+There is no trailing newline in any case. `tokenEstimate` is computed over the extended string.
+
+The encoding's `json` form is **not** modified by chart descriptors; the schemas in §3.3 / §4.5 / §5.4 are stable. The chart data is instead echoed on the top-level result:
+
+```ts
+type CompressResult = {
+  encodings: { … };          // unchanged
+  charts: ChartDescriptor[]; // empty array when grid.charts is missing or empty
+  rawBaseline: { tokenEstimate: number };
+};
+```
+
+`result.charts` is a structural copy of `grid.charts` in input order, with no normalisation. Goldens lock it in as `charts.json` (2-space indent + trailing newline, just like the encoding JSONs).
+
+### 6.3 Token counting
+
+The injectable token counter (§7) is applied to the **extended** encoding strings (cells + chart block). The chart tokens contribute to every encoding's `tokenEstimate`; `rawBaseline.tokenEstimate` is unaffected (it measures the vanilla cell encoding only — charts are not part of the un-compressed baseline a developer would paste).
+
+## 7. Token counting
 
 Token counting is performed by an **injectable counter**. `compress()` accepts a caller-supplied function
 
@@ -414,13 +480,13 @@ Apple | 3 | 1.50
 Pear | 5 | 0.30
 ```
 
-## 7. Conformance
+## 8. Conformance
 
 Every implementation ships a single command (e.g. `npm test` for TypeScript) that:
 
 1. Loads every fixture under `fixtures/corpus/`.
 2. Runs `compress()` on the fixture's input.
-3. Diffs the produced `string`, `json`, and `tokenEstimate` for each encoding (plus `rawBaseline.tokenEstimate`) against the fixture's goldens.
+3. Diffs the produced `string`, `json`, and `tokenEstimate` for each encoding (plus `rawBaseline.tokenEstimate` and `charts`) against the fixture's goldens.
 4. Fails on any byte-level difference.
 
 Goldens are regenerated from the TypeScript reference implementation via a one-step script (see [`fixtures/README.md`](../fixtures/README.md)). Hand-editing goldens is not supported — change `compress()` and regenerate.

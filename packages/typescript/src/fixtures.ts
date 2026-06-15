@@ -55,5 +55,6 @@ export const goldenFiles = {
   formatAggregationString: "formatAggregation.string.txt",
   formatAggregationJson: "formatAggregation.json",
   formatAggregationTokens: "formatAggregation.tokenEstimate.txt",
+  charts: "charts.json",
   rawBaselineTokens: "rawBaseline.tokenEstimate.txt",
 } as const;

@@ -1,0 +1,70 @@
+{
+  "encoding": "anchor-skeleton",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "cells": [
+    {
+      "address": "A1",
+      "value": "Quarter"
+    },
+    {
+      "address": "B1",
+      "value": "Revenue"
+    },
+    {
+      "address": "C1",
+      "value": "Cost"
+    },
+    {
+      "address": "A2",
+      "value": "Q1"
+    },
+    {
+      "address": "B2",
+      "value": "100"
+    },
+    {
+      "address": "C2",
+      "value": "60"
+    },
+    {
+      "address": "A3",
+      "value": "Q2"
+    },
+    {
+      "address": "B3",
+      "value": "150"
+    },
+    {
+      "address": "C3",
+      "value": "80"
+    },
+    {
+      "address": "A4",
+      "value": "Q3"
+    },
+    {
+      "address": "B4",
+      "value": "180"
+    },
+    {
+      "address": "C4",
+      "value": "90"
+    },
+    {
+      "address": "A5",
+      "value": "Q4"
+    },
+    {
+      "address": "B5",
+      "value": "220"
+    },
+    {
+      "address": "C5",
+      "value": "110"
+    }
+  ]
+}

@@ -117,6 +117,15 @@ describe("conformance corpus", () => {
         ).trim();
         expect(String(result.rawBaseline.tokenEstimate)).toBe(expected);
       });
+
+      it("matches the charts.json golden", () => {
+        const expected = readFileSync(
+          join(goldenDir, goldenFiles.charts),
+          "utf8",
+        );
+        const produced = `${JSON.stringify(result.charts, null, 2)}\n`;
+        expect(produced).toBe(expected);
+      });
     },
   );
 });

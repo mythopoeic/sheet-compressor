@@ -1,0 +1,5 @@
+{
+  "id": "with-charts",
+  "title": "Quarterly table with two chart descriptors",
+  "description": "SPEC §6 fixture: a 3-column quarterly table plus two charts. The second chart's title contains a quote, exercising the §6.1 escape rules."
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Q1Sales",
+    "type": "bar",
+    "anchorRange": "E2:I20",
+    "title": "Sales",
+    "dataRanges": [
+      "A1:C5"
+    ],
+    "series": [
+      "Revenue",
+      "Cost"
+    ],
+    "axes": {
+      "x": "Quarter",
+      "y": "Amount"
+    }
+  },
+  {
+    "name": "Mix",
+    "type": "pie",
+    "anchorRange": "K2:O20",
+    "title": "Revenue, mix \"FY\"",
+    "dataRanges": [
+      "B2:B5"
+    ]
+  }
+]

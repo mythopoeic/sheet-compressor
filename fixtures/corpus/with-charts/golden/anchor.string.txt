@@ -1,0 +1,7 @@
+A1,Quarter|B1,Revenue|C1,Cost
+A2,Q1|B2,100|C2,60
+A3,Q2|B3,150|C3,80
+A4,Q3|B4,180|C4,90
+A5,Q4|B5,220|C5,110
+CHART(bar)@E2:I20 title="Sales" data=A1:C5 series=[Revenue,Cost] xAxis="Quarter" yAxis="Amount"
+CHART(pie)@K2:O20 title="Revenue, mix \"FY\"" data=B2:B5

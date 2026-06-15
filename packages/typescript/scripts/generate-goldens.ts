@@ -51,6 +51,12 @@ function main(): void {
       `${JSON.stringify(result.encodings.formatAggregation.json, null, 2)}\n`,
     );
 
+    // charts.json — 2-space indent + ONE trailing newline (SPEC §6.2).
+    writeFileSync(
+      join(goldenDir, goldenFiles.charts),
+      `${JSON.stringify(result.charts, null, 2)}\n`,
+    );
+
     // token-estimate files — one integer + "\n".
     writeFileSync(
       join(goldenDir, goldenFiles.anchorTokens),
