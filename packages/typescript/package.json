@@ -11,11 +11,17 @@
       "default": "./src/index.ts"
     }
   },
+  "files": [
+    "src",
+    "prompts"
+  ],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "generate-goldens": "tsx scripts/generate-goldens.ts"
+    "generate-goldens": "tsx scripts/generate-goldens.ts",
+    "prepack": "node -e \"require('node:fs').cpSync('../../prompts','./prompts',{recursive:true})\"",
+    "postpack": "node -e \"require('node:fs').rmSync('./prompts',{recursive:true,force:true})\""
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

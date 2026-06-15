@@ -28,6 +28,9 @@ bin/
 obj/
 *.tsbuildinfo
 
+# Transient copy made by `npm pack` prepack (see packages/typescript/package.json)
+/packages/typescript/prompts/
+
 # OS / editor
 .DS_Store
 Thumbs.db
