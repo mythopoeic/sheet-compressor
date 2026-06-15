@@ -84,6 +84,26 @@ export type InvertedIndexJson = {
   groups: Array<{ value: string; ranges: string[] }>;
 };
 
+export type FormatType =
+  | "IntNum"
+  | "FloatNum"
+  | "ScientificNum"
+  | "PercentageNum"
+  | "CurrencyData"
+  | "DateData"
+  | "TimeData"
+  | "YearData"
+  | "EmailData"
+  | "Boolean"
+  | "Text";
+
+export type FormatAggregationJson = {
+  encoding: "format-aggregation";
+  version: 0;
+  origin: Origin;
+  groups: Array<{ type: FormatType; ranges: string[] }>;
+};
+
 export type Encoding<TJson = unknown> = {
   string: string;
   json: TJson;
@@ -94,6 +114,7 @@ export type CompressResult = {
   encodings: {
     anchor: Encoding<AnchorJson>;
     invertedIndex: Encoding<InvertedIndexJson>;
+    formatAggregation: Encoding<FormatAggregationJson>;
   };
   rawBaseline: { tokenEstimate: number };
 };

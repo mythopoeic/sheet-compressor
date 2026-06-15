@@ -1,5 +1,6 @@
 import { vanillaEncode } from "./baseline.ts";
 import { encodeAnchor } from "./encodings/anchor.ts";
+import { encodeFormatAggregation } from "./encodings/formatAggregation.ts";
 import { encodeInvertedIndex } from "./encodings/invertedIndex.ts";
 import { resolveStrategy } from "./strategies.ts";
 import { estimateTokens } from "./tokens.ts";
@@ -15,6 +16,7 @@ export function compress(
     encodings: {
       anchor: encodeAnchor(grid, detection),
       invertedIndex: encodeInvertedIndex(grid),
+      formatAggregation: encodeFormatAggregation(grid),
     },
     rawBaseline: { tokenEstimate: estimateTokens(vanillaEncode(grid)) },
   };

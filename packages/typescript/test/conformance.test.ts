@@ -79,6 +79,37 @@ describe("conformance corpus", () => {
         );
       });
 
+      it("matches the formatAggregation.string golden", () => {
+        const expected = readFileSync(
+          join(goldenDir, goldenFiles.formatAggregationString),
+          "utf8",
+        );
+        expect(result.encodings.formatAggregation.string).toBe(expected);
+      });
+
+      it("matches the formatAggregation.json golden", () => {
+        const expected = readFileSync(
+          join(goldenDir, goldenFiles.formatAggregationJson),
+          "utf8",
+        );
+        const produced = `${JSON.stringify(
+          result.encodings.formatAggregation.json,
+          null,
+          2,
+        )}\n`;
+        expect(produced).toBe(expected);
+      });
+
+      it("matches the formatAggregation.tokenEstimate golden", () => {
+        const expected = readFileSync(
+          join(goldenDir, goldenFiles.formatAggregationTokens),
+          "utf8",
+        ).trim();
+        expect(String(result.encodings.formatAggregation.tokenEstimate)).toBe(
+          expected,
+        );
+      });
+
       it("matches the rawBaseline.tokenEstimate golden", () => {
         const expected = readFileSync(
           join(goldenDir, goldenFiles.rawBaselineTokens),

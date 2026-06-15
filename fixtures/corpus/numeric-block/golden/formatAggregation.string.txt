@@ -1,0 +1,4 @@
+IntNum: C2:C5
+FloatNum: D2:E5
+DateData: A2:A5
+Text: A1:E1,B2:B5

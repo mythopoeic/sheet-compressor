@@ -2,7 +2,7 @@
 
 Language-neutral contract for the `sheet-compressor` library. Every implementation (TypeScript reference, Python, C#, Go, VBA, Office Script) MUST produce byte-identical output for the same input on every fixture in [`fixtures/`](../fixtures).
 
-This is **v0**: the **structural-anchor skeleton** and **inverted-index** encodings are specified. Anchor detection sits behind a swappable strategy interface (§3.1) with two built-ins: the Phase-1 grid-only detector (default) and a `keep-all` fallback. The format-aggregation encoding, chart descriptors, and the Phase-2 styling-aware detector will be added in later slices — but the input and output **contracts** below already reserve their shape so they can be filled in without breaking changes.
+This is **v0**: the **structural-anchor skeleton**, **inverted-index**, and **format-aggregation** encodings are specified. Anchor detection sits behind a swappable strategy interface (§3.1) with two built-ins: the Phase-1 grid-only detector (default) and a `keep-all` fallback. Chart descriptors and the Phase-2 styling-aware detector will be added in later slices — but the input and output **contracts** below already reserve their shape so they can be filled in without breaking changes.
 
 ## 1. Input contract
 
@@ -57,9 +57,9 @@ type ChartDescriptor = {
 ```ts
 type CompressResult = {
   encodings: {
-    anchor: Encoding;             // implemented in v0
-    invertedIndex: Encoding;      // implemented in v0
-    formatAggregation?: Encoding; // reserved; absent in v0
+    anchor: Encoding;             // implemented in v0 (§3)
+    invertedIndex: Encoding;      // implemented in v0 (§4)
+    formatAggregation: Encoding;  // implemented in v0 (§5)
   };
 
   // Token estimate for the raw sheet (the un-compressed baseline), so callers
@@ -68,13 +68,13 @@ type CompressResult = {
 };
 
 type Encoding = {
-  string: string;                 // canonical string form (see §3)
-  json: unknown;                  // canonical JSON form (see §3)
+  string: string;                 // canonical string form
+  json: unknown;                  // canonical JSON form
   tokenEstimate: number;          // tokens for `string`, via the active counter
 };
 ```
 
-The result object MUST always include `encodings.anchor`, `encodings.invertedIndex`, and `rawBaseline`. Other encoding slots are absent (not `null`) when not yet implemented.
+The result object MUST always include `encodings.anchor`, `encodings.invertedIndex`, `encodings.formatAggregation`, and `rawBaseline`.
 
 ## 3. Structural-anchor skeleton encoding (v0)
 
@@ -303,7 +303,86 @@ For the example above:
 
 JSON serialisation in goldens uses **2-space indentation** and a trailing newline; the JSON object key order is exactly as listed in the type above.
 
-## 5. Token counting (v0)
+## 5. Format-aggregation encoding (v0)
+
+The format-aggregation encoding classifies each non-empty cell into a type category, then merges adjacent same-type cells into rectangular A1 ranges. Large numeric blocks collapse from one token per cell to one token per rectangle, which is where the encoding wins on real sheets.
+
+### 5.1 Type categories
+
+The category set, in canonical emission order:
+
+| Order | Name             | Matches                                                                 |
+|-------|------------------|-------------------------------------------------------------------------|
+| 1     | `IntNum`         | `^-?\d+$` (and not classified as `YearData` first)                      |
+| 2     | `FloatNum`       | `^-?(\d+\.\d*|\.\d+)$` — a decimal point, no exponent                  |
+| 3     | `ScientificNum`  | `^-?\d+(\.\d+)?[eE][+-]?\d+$`                                           |
+| 4     | `PercentageNum`  | `^-?\d+(\.\d+)?%$`                                                      |
+| 5     | `CurrencyData`   | `^-?[$€£¥]\d+(\.\d+)?$`                                                 |
+| 6     | `DateData`       | `^\d{4}-\d{1,2}-\d{1,2}$`, `^\d{1,2}/\d{1,2}/\d{2,4}$`, or `^\d{1,2}-\d{1,2}-\d{2,4}$` |
+| 7     | `TimeData`       | `^\d{1,2}:\d{2}(:\d{2})?\s?(AM\|PM\|am\|pm)$` or `^\d{1,2}:\d{2}(:\d{2})?$` |
+| 8     | `YearData`       | `^(19\|20)\d{2}$` (four-digit year in 1900–2099)                        |
+| 9     | `EmailData`      | `^[^\s@]+@[^\s@]+\.[^\s@]+$`                                            |
+| 10    | `Boolean`        | case-insensitive `true` or `false`                                      |
+| 11    | `Text`           | fallback for any non-empty value that matches nothing above             |
+
+Classification probes patterns in the priority order **Boolean → EmailData → ScientificNum → PercentageNum → CurrencyData → DateData → TimeData → YearData → FloatNum → IntNum → Text**, and the first match wins. The priority order is what makes `1900` a `YearData` (not `IntNum`) and `1.5e10` a `ScientificNum` (not `FloatNum`).
+
+A cell with the empty string `""` has no type and never participates in aggregation (per §3.1).
+
+### 5.2 Aggregation algorithm
+
+Greedy rectangular merging, deterministic and language-neutral. Scan cells in row-major order; for each unclaimed non-empty cell `(r, c)`:
+
+1. Let `t` be its type.
+2. Extend right: grow width `w` while `(r, c+w)` has type `t` and is unclaimed.
+3. Extend down: grow height `h` while every cell of `(r+h, c..c+w-1)` has type `t` and is unclaimed. If any cell breaks the run, stop — the rectangle does NOT shrink width to accommodate.
+4. Mark every cell of `(r..r+h-1, c..c+w-1)` claimed and emit a rectangle `(t, top=r, left=c, bottom=r+h-1, right=c+w-1)`.
+
+Rectangles are discovered in row-major top-left order. Empty cells break runs; the algorithm never merges across a gap.
+
+### 5.3 String form
+
+One line per type group. Within a line, ranges are joined with `,` (no space). Lines are joined with `\n`. There is **no trailing newline**.
+
+```
+<Type>: <range>[,<range>]*
+```
+
+Type groups are emitted in the canonical order from §5.1 (groups with zero ranges are omitted). Ranges within a group appear in their discovery order — i.e. sorted by `(top-row, left-col)` row-major.
+
+A range is `<top-left>:<bottom-right>` for any multi-cell rectangle, and just `<address>` for a single cell (so `B2`, not `B2:B2`).
+
+**Example.** Applied to the running anchor example:
+
+```
+Name  Qty  Price
+Apple 3    1.50
+(empty row)
+Pear  5    0.30
+```
+
+produces:
+
+```
+IntNum: B2,B4
+FloatNum: C2,C4
+Text: A1:C1,A2,A4
+```
+
+### 5.4 JSON form
+
+```ts
+type FormatAggregationJson = {
+  encoding: "format-aggregation";
+  version: 0;
+  origin: { row: number; col: number };
+  groups: Array<{ type: FormatType; ranges: string[] }>;
+};
+```
+
+`groups` is in the same canonical type order as the string form, with the same `ranges` strings. An empty grid emits `groups: []`. JSON formatting matches §3.3: 2-space indent + trailing newline; object key order exactly as in the type above.
+
+## 6. Token counting (v0)
 
 v0 uses one shared **heuristic counter** for both `rawBaseline.tokenEstimate` and each `Encoding.tokenEstimate`. Real tokenizers (tiktoken / gpt-tokenizer / SharpToken / …) will be wired in a later slice via the injectable-counter interface from the PRD; until they land, the heuristic is the only counter and every implementation MUST agree on its output.
 
@@ -325,7 +404,7 @@ Apple | 3 | 1.50
 Pear | 5 | 0.30
 ```
 
-## 6. Conformance
+## 7. Conformance
 
 Every implementation ships a single command (e.g. `npm test` for TypeScript) that:
 

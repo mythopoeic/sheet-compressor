@@ -52,5 +52,8 @@ export const goldenFiles = {
   invertedIndexString: "invertedIndex.string.txt",
   invertedIndexJson: "invertedIndex.json",
   invertedIndexTokens: "invertedIndex.tokenEstimate.txt",
+  formatAggregationString: "formatAggregation.string.txt",
+  formatAggregationJson: "formatAggregation.json",
+  formatAggregationTokens: "formatAggregation.tokenEstimate.txt",
   rawBaselineTokens: "rawBaseline.tokenEstimate.txt",
 } as const;

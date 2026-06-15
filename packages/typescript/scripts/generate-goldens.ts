@@ -39,6 +39,18 @@ function main(): void {
       `${JSON.stringify(result.encodings.invertedIndex.json, null, 2)}\n`,
     );
 
+    // formatAggregation.string.txt — NO trailing newline.
+    writeFileSync(
+      join(goldenDir, goldenFiles.formatAggregationString),
+      result.encodings.formatAggregation.string,
+    );
+
+    // formatAggregation.json — 2-space indent + ONE trailing newline.
+    writeFileSync(
+      join(goldenDir, goldenFiles.formatAggregationJson),
+      `${JSON.stringify(result.encodings.formatAggregation.json, null, 2)}\n`,
+    );
+
     // token-estimate files — one integer + "\n".
     writeFileSync(
       join(goldenDir, goldenFiles.anchorTokens),
@@ -47,6 +59,10 @@ function main(): void {
     writeFileSync(
       join(goldenDir, goldenFiles.invertedIndexTokens),
       `${result.encodings.invertedIndex.tokenEstimate}\n`,
+    );
+    writeFileSync(
+      join(goldenDir, goldenFiles.formatAggregationTokens),
+      `${result.encodings.formatAggregation.tokenEstimate}\n`,
     );
     writeFileSync(
       join(goldenDir, goldenFiles.rawBaselineTokens),

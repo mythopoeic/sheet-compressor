@@ -18,6 +18,8 @@ export type {
   CompressResult,
   DataType,
   Encoding,
+  FormatAggregationJson,
+  FormatType,
   Grid,
   InvertedIndexJson,
   Origin,
