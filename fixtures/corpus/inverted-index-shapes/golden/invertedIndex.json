@@ -1,0 +1,24 @@
+{
+  "encoding": "inverted-index",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "value": "T",
+      "ranges": [
+        "A1:C1",
+        "B2:B3"
+      ]
+    },
+    {
+      "value": "L",
+      "ranges": [
+        "A5:A7",
+        "B7:C7"
+      ]
+    }
+  ]
+}

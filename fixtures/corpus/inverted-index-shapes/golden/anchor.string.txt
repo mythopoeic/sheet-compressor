@@ -1,0 +1,6 @@
+A1,T|B1,T|C1,T
+B2,T
+B3,T
+A5,L
+A6,L
+A7,L|B7,L|C7,L

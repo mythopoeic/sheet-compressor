@@ -1,0 +1,110 @@
+{
+  "encoding": "anchor-skeleton",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "cells": [
+    {
+      "address": "A1",
+      "value": "Region"
+    },
+    {
+      "address": "B1",
+      "value": "Q1"
+    },
+    {
+      "address": "C1",
+      "value": "Q2"
+    },
+    {
+      "address": "D1",
+      "value": "Q3"
+    },
+    {
+      "address": "E1",
+      "value": "Q4"
+    },
+    {
+      "address": "A2",
+      "value": "Group 1"
+    },
+    {
+      "address": "B2",
+      "value": "ok"
+    },
+    {
+      "address": "C2",
+      "value": "ok"
+    },
+    {
+      "address": "D2",
+      "value": "ok"
+    },
+    {
+      "address": "E2",
+      "value": "ok"
+    },
+    {
+      "address": "A3",
+      "value": "Group 2"
+    },
+    {
+      "address": "B3",
+      "value": "ok"
+    },
+    {
+      "address": "C3",
+      "value": "ok"
+    },
+    {
+      "address": "D3",
+      "value": "ok"
+    },
+    {
+      "address": "E3",
+      "value": "ok"
+    },
+    {
+      "address": "A4",
+      "value": "Group 3"
+    },
+    {
+      "address": "B4",
+      "value": "ok"
+    },
+    {
+      "address": "C4",
+      "value": "ok"
+    },
+    {
+      "address": "D4",
+      "value": "ok"
+    },
+    {
+      "address": "E4",
+      "value": "ok"
+    },
+    {
+      "address": "A5",
+      "value": "Group 4"
+    },
+    {
+      "address": "B5",
+      "value": "ok"
+    },
+    {
+      "address": "C5",
+      "value": "ok"
+    },
+    {
+      "address": "D5",
+      "value": "ok"
+    },
+    {
+      "address": "E5",
+      "value": "ok"
+    }
+  ]
+}

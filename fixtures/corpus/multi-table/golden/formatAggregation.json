@@ -1,0 +1,34 @@
+{
+  "encoding": "format-aggregation",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "type": "IntNum",
+      "ranges": [
+        "B2:E4",
+        "B16:B18",
+        "D16:D18"
+      ]
+    },
+    {
+      "type": "FloatNum",
+      "ranges": [
+        "C16:C18"
+      ]
+    },
+    {
+      "type": "Text",
+      "ranges": [
+        "A1:E1",
+        "A2:A4",
+        "A15:E15",
+        "A16:A18",
+        "E16:E18"
+      ]
+    }
+  ]
+}

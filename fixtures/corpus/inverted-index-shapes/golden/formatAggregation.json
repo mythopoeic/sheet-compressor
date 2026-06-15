@@ -1,0 +1,19 @@
+{
+  "encoding": "format-aggregation",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "type": "Text",
+      "ranges": [
+        "A1:C1",
+        "B2:B3",
+        "A5:A7",
+        "B7:C7"
+      ]
+    }
+  ]
+}

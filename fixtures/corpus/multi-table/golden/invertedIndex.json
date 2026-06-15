@@ -1,0 +1,235 @@
+{
+  "encoding": "inverted-index",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "value": "Product",
+      "ranges": [
+        "A1"
+      ]
+    },
+    {
+      "value": "Q1",
+      "ranges": [
+        "B1"
+      ]
+    },
+    {
+      "value": "Q2",
+      "ranges": [
+        "C1"
+      ]
+    },
+    {
+      "value": "Q3",
+      "ranges": [
+        "D1"
+      ]
+    },
+    {
+      "value": "Q4",
+      "ranges": [
+        "E1"
+      ]
+    },
+    {
+      "value": "Apples",
+      "ranges": [
+        "A2"
+      ]
+    },
+    {
+      "value": "100",
+      "ranges": [
+        "B2"
+      ]
+    },
+    {
+      "value": "150",
+      "ranges": [
+        "C2"
+      ]
+    },
+    {
+      "value": "200",
+      "ranges": [
+        "D2"
+      ]
+    },
+    {
+      "value": "120",
+      "ranges": [
+        "E2"
+      ]
+    },
+    {
+      "value": "Pears",
+      "ranges": [
+        "A3"
+      ]
+    },
+    {
+      "value": "80",
+      "ranges": [
+        "B3"
+      ]
+    },
+    {
+      "value": "90",
+      "ranges": [
+        "C3"
+      ]
+    },
+    {
+      "value": "110",
+      "ranges": [
+        "D3"
+      ]
+    },
+    {
+      "value": "85",
+      "ranges": [
+        "E3"
+      ]
+    },
+    {
+      "value": "Plums",
+      "ranges": [
+        "A4"
+      ]
+    },
+    {
+      "value": "60",
+      "ranges": [
+        "B4",
+        "D18"
+      ]
+    },
+    {
+      "value": "70",
+      "ranges": [
+        "C4"
+      ]
+    },
+    {
+      "value": "75",
+      "ranges": [
+        "D4",
+        "D16"
+      ]
+    },
+    {
+      "value": "65",
+      "ranges": [
+        "E4"
+      ]
+    },
+    {
+      "value": "Region",
+      "ranges": [
+        "A15"
+      ]
+    },
+    {
+      "value": "Cost",
+      "ranges": [
+        "B15"
+      ]
+    },
+    {
+      "value": "Margin",
+      "ranges": [
+        "C15"
+      ]
+    },
+    {
+      "value": "Profit",
+      "ranges": [
+        "D15"
+      ]
+    },
+    {
+      "value": "Status",
+      "ranges": [
+        "E15"
+      ]
+    },
+    {
+      "value": "North",
+      "ranges": [
+        "A16"
+      ]
+    },
+    {
+      "value": "500",
+      "ranges": [
+        "B16"
+      ]
+    },
+    {
+      "value": "0.15",
+      "ranges": [
+        "C16"
+      ]
+    },
+    {
+      "value": "good",
+      "ranges": [
+        "E16",
+        "E18"
+      ]
+    },
+    {
+      "value": "South",
+      "ranges": [
+        "A17"
+      ]
+    },
+    {
+      "value": "400",
+      "ranges": [
+        "B17"
+      ]
+    },
+    {
+      "value": "0.10",
+      "ranges": [
+        "C17"
+      ]
+    },
+    {
+      "value": "40",
+      "ranges": [
+        "D17"
+      ]
+    },
+    {
+      "value": "ok",
+      "ranges": [
+        "E17"
+      ]
+    },
+    {
+      "value": "East",
+      "ranges": [
+        "A18"
+      ]
+    },
+    {
+      "value": "300",
+      "ranges": [
+        "B18"
+      ]
+    },
+    {
+      "value": "0.20",
+      "ranges": [
+        "C18"
+      ]
+    }
+  ]
+}

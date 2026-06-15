@@ -1,0 +1,50 @@
+{
+  "encoding": "anchor-skeleton",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "cells": [
+    {
+      "address": "A1",
+      "value": "T"
+    },
+    {
+      "address": "B1",
+      "value": "T"
+    },
+    {
+      "address": "C1",
+      "value": "T"
+    },
+    {
+      "address": "B2",
+      "value": "T"
+    },
+    {
+      "address": "B3",
+      "value": "T"
+    },
+    {
+      "address": "A5",
+      "value": "L"
+    },
+    {
+      "address": "A6",
+      "value": "L"
+    },
+    {
+      "address": "A7",
+      "value": "L"
+    },
+    {
+      "address": "B7",
+      "value": "L"
+    },
+    {
+      "address": "C7",
+      "value": "L"
+    }
+  ]
+}

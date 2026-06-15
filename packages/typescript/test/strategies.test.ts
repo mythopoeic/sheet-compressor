@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { compress } from "../src/compress.ts";
+import { loadFixtures } from "../src/fixtures.ts";
 import {
   keepAllStrategy,
   phase1Strategy,
@@ -168,5 +169,43 @@ describe("phase1 strategy — anchor detection", () => {
     };
     const { keptRows } = phase1Strategy.detect(grid);
     expect([...keptRows].sort()).toEqual([0, 1]);
+  });
+});
+
+// issue #23 — these fixtures EXIST to lock specific phase-1 behaviors. The
+// conformance suite already byte-diffs the goldens; these tests pin the
+// *intent* so a future fixture edit that erodes the coverage purpose (e.g.
+// shrinks phase1-lossy until pruning no longer fires) fails loudly here.
+describe("phase1 fixtures lock the lossy + multi-table behaviors (issue #23)", () => {
+  const fixtures = new Map(loadFixtures().map((fx) => [fx.id, fx]));
+
+  it("phase1-lossy: skeleton is materially smaller than the input", () => {
+    const fx = fixtures.get("phase1-lossy");
+    if (!fx) throw new Error("fixture phase1-lossy missing");
+    const { keptRows, keptCols } = phase1Strategy.detect(fx.input);
+    const inputRows = fx.input.rows.length;
+    const inputCols = Math.max(...fx.input.rows.map((r) => r.length));
+    // The whole point of the fixture: phase-1 drops the homogeneous bulk.
+    // Lock that the skeleton is at most half the rows AND half the cols.
+    expect(keptRows.size).toBeLessThanOrEqual(inputRows / 2);
+    expect(keptCols.size).toBeLessThanOrEqual(inputCols / 2);
+    // And specifically smaller than the input on at least one axis by 10+.
+    expect(inputRows - keptRows.size).toBeGreaterThanOrEqual(10);
+    expect(inputCols - keptCols.size).toBeGreaterThanOrEqual(5);
+  });
+
+  it("multi-table: keeps both tables and prunes the blank gap between them", () => {
+    const fx = fixtures.get("multi-table");
+    if (!fx) throw new Error("fixture multi-table missing");
+    const { keptRows } = phase1Strategy.detect(fx.input);
+    // Both tables sit at rows 0-3 and 14-17 — phase-1 must keep both regions.
+    for (const r of [0, 1, 2, 3, 14, 15, 16, 17]) {
+      expect(keptRows.has(r)).toBe(true);
+    }
+    // The blank band between the tables (rows 4..13) MUST be pruned, otherwise
+    // the fixture isn't proving multi-table separation — it's just keeping all.
+    for (const r of [4, 5, 6, 7, 8, 9, 10, 11, 12, 13]) {
+      expect(keptRows.has(r)).toBe(false);
+    }
   });
 });

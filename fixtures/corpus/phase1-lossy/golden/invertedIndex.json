@@ -1,0 +1,274 @@
+{
+  "encoding": "inverted-index",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "value": "Region",
+      "ranges": [
+        "A1"
+      ]
+    },
+    {
+      "value": "Q1",
+      "ranges": [
+        "B1"
+      ]
+    },
+    {
+      "value": "Q2",
+      "ranges": [
+        "C1"
+      ]
+    },
+    {
+      "value": "Q3",
+      "ranges": [
+        "D1"
+      ]
+    },
+    {
+      "value": "Q4",
+      "ranges": [
+        "E1"
+      ]
+    },
+    {
+      "value": "Q5",
+      "ranges": [
+        "F1"
+      ]
+    },
+    {
+      "value": "Q6",
+      "ranges": [
+        "G1"
+      ]
+    },
+    {
+      "value": "Q7",
+      "ranges": [
+        "H1"
+      ]
+    },
+    {
+      "value": "Q8",
+      "ranges": [
+        "I1"
+      ]
+    },
+    {
+      "value": "Q9",
+      "ranges": [
+        "J1"
+      ]
+    },
+    {
+      "value": "Q10",
+      "ranges": [
+        "K1"
+      ]
+    },
+    {
+      "value": "Q11",
+      "ranges": [
+        "L1"
+      ]
+    },
+    {
+      "value": "Q12",
+      "ranges": [
+        "M1"
+      ]
+    },
+    {
+      "value": "Note",
+      "ranges": [
+        "N1"
+      ]
+    },
+    {
+      "value": "Group 1",
+      "ranges": [
+        "A2"
+      ]
+    },
+    {
+      "value": "ok",
+      "ranges": [
+        "B2:N30"
+      ]
+    },
+    {
+      "value": "Group 2",
+      "ranges": [
+        "A3"
+      ]
+    },
+    {
+      "value": "Group 3",
+      "ranges": [
+        "A4"
+      ]
+    },
+    {
+      "value": "Group 4",
+      "ranges": [
+        "A5"
+      ]
+    },
+    {
+      "value": "Group 5",
+      "ranges": [
+        "A6"
+      ]
+    },
+    {
+      "value": "Group 6",
+      "ranges": [
+        "A7"
+      ]
+    },
+    {
+      "value": "Group 7",
+      "ranges": [
+        "A8"
+      ]
+    },
+    {
+      "value": "Group 8",
+      "ranges": [
+        "A9"
+      ]
+    },
+    {
+      "value": "Group 9",
+      "ranges": [
+        "A10"
+      ]
+    },
+    {
+      "value": "Group 10",
+      "ranges": [
+        "A11"
+      ]
+    },
+    {
+      "value": "Group 11",
+      "ranges": [
+        "A12"
+      ]
+    },
+    {
+      "value": "Group 12",
+      "ranges": [
+        "A13"
+      ]
+    },
+    {
+      "value": "Group 13",
+      "ranges": [
+        "A14"
+      ]
+    },
+    {
+      "value": "Group 14",
+      "ranges": [
+        "A15"
+      ]
+    },
+    {
+      "value": "Group 15",
+      "ranges": [
+        "A16"
+      ]
+    },
+    {
+      "value": "Group 16",
+      "ranges": [
+        "A17"
+      ]
+    },
+    {
+      "value": "Group 17",
+      "ranges": [
+        "A18"
+      ]
+    },
+    {
+      "value": "Group 18",
+      "ranges": [
+        "A19"
+      ]
+    },
+    {
+      "value": "Group 19",
+      "ranges": [
+        "A20"
+      ]
+    },
+    {
+      "value": "Group 20",
+      "ranges": [
+        "A21"
+      ]
+    },
+    {
+      "value": "Group 21",
+      "ranges": [
+        "A22"
+      ]
+    },
+    {
+      "value": "Group 22",
+      "ranges": [
+        "A23"
+      ]
+    },
+    {
+      "value": "Group 23",
+      "ranges": [
+        "A24"
+      ]
+    },
+    {
+      "value": "Group 24",
+      "ranges": [
+        "A25"
+      ]
+    },
+    {
+      "value": "Group 25",
+      "ranges": [
+        "A26"
+      ]
+    },
+    {
+      "value": "Group 26",
+      "ranges": [
+        "A27"
+      ]
+    },
+    {
+      "value": "Group 27",
+      "ranges": [
+        "A28"
+      ]
+    },
+    {
+      "value": "Group 28",
+      "ranges": [
+        "A29"
+      ]
+    },
+    {
+      "value": "Group 29",
+      "ranges": [
+        "A30"
+      ]
+    }
+  ]
+}

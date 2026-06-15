@@ -187,4 +187,28 @@ describe("compress() — inverted-index encoding, v0", () => {
       "A1|C1|A3|C3,X",
     );
   });
+
+  // issue #23 — SPEC §4.2 explicitly documents the greedy width-first scan
+  // is NOT minimal for L- or T-shaped regions: it splits each into two
+  // rectangles. The `inverted-index-shapes` fixture locks this; this test
+  // names the intent so a porter who "improves" the merge to a single
+  // rectangle (or a different 2-rectangle split) fails here as well as in
+  // the conformance corpus.
+  it("L- and T-shapes each split into exactly TWO rectangles (SPEC §4.2)", () => {
+    const grid: Grid = {
+      origin: { row: 1, col: 1 },
+      rows: [
+        ["T", "T", "T"],
+        ["", "T", ""],
+        ["", "T", ""],
+        ["", "", ""],
+        ["L", "", ""],
+        ["L", "", ""],
+        ["L", "L", "L"],
+      ],
+    };
+    expect(compress(grid).encodings.invertedIndex.string).toBe(
+      ["A1:C1|B2:B3,T", "A5:A7|B7:C7,L"].join("\n"),
+    );
+  });
 });

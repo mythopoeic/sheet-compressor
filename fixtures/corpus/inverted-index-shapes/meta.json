@@ -1,0 +1,5 @@
+{
+  "id": "inverted-index-shapes",
+  "title": "L- and T-shaped repeated-value regions split into 2 rectangles",
+  "description": "Locks SPEC §4.2's documented non-minimal behavior: a value forming an L or T region splits into exactly two A1 rectangles under the greedy width-first scan, NOT one. Value 'T' occupies a T-shape (top bar + centered stem) and emits A1:C1 + B2:B3. Value 'L' occupies an L-shape (vertical leg + bottom foot) and emits A5:A7 + B7:C7. A porter who 'improves' the greedy merge to coalesce these into one rectangle (impossible — neither shape is rectangular) or splits them differently will fail conformance."
+}

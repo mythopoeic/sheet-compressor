@@ -1,0 +1,5 @@
+{
+  "id": "multi-table",
+  "title": "Two substantial tables separated by a blank band",
+  "description": "Locks phase-1 multi-table behavior: two heterogeneous 4-row tables sit at rows 0-3 (Product/Q1-Q4) and 14-17 (Region/Cost/Margin/Profit/Status), separated by 10 fully-blank rows. Each table's rows are anchored by heterogeneity; k-neighborhood windows from both tables overlap across the gap, but the blank-row prune pass drops rows 4-13 and 18-19 from the kept region."
+}

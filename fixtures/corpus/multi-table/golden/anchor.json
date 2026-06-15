@@ -1,0 +1,170 @@
+{
+  "encoding": "anchor-skeleton",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "cells": [
+    {
+      "address": "A1",
+      "value": "Product"
+    },
+    {
+      "address": "B1",
+      "value": "Q1"
+    },
+    {
+      "address": "C1",
+      "value": "Q2"
+    },
+    {
+      "address": "D1",
+      "value": "Q3"
+    },
+    {
+      "address": "E1",
+      "value": "Q4"
+    },
+    {
+      "address": "A2",
+      "value": "Apples"
+    },
+    {
+      "address": "B2",
+      "value": "100"
+    },
+    {
+      "address": "C2",
+      "value": "150"
+    },
+    {
+      "address": "D2",
+      "value": "200"
+    },
+    {
+      "address": "E2",
+      "value": "120"
+    },
+    {
+      "address": "A3",
+      "value": "Pears"
+    },
+    {
+      "address": "B3",
+      "value": "80"
+    },
+    {
+      "address": "C3",
+      "value": "90"
+    },
+    {
+      "address": "D3",
+      "value": "110"
+    },
+    {
+      "address": "E3",
+      "value": "85"
+    },
+    {
+      "address": "A4",
+      "value": "Plums"
+    },
+    {
+      "address": "B4",
+      "value": "60"
+    },
+    {
+      "address": "C4",
+      "value": "70"
+    },
+    {
+      "address": "D4",
+      "value": "75"
+    },
+    {
+      "address": "E4",
+      "value": "65"
+    },
+    {
+      "address": "A15",
+      "value": "Region"
+    },
+    {
+      "address": "B15",
+      "value": "Cost"
+    },
+    {
+      "address": "C15",
+      "value": "Margin"
+    },
+    {
+      "address": "D15",
+      "value": "Profit"
+    },
+    {
+      "address": "E15",
+      "value": "Status"
+    },
+    {
+      "address": "A16",
+      "value": "North"
+    },
+    {
+      "address": "B16",
+      "value": "500"
+    },
+    {
+      "address": "C16",
+      "value": "0.15"
+    },
+    {
+      "address": "D16",
+      "value": "75"
+    },
+    {
+      "address": "E16",
+      "value": "good"
+    },
+    {
+      "address": "A17",
+      "value": "South"
+    },
+    {
+      "address": "B17",
+      "value": "400"
+    },
+    {
+      "address": "C17",
+      "value": "0.10"
+    },
+    {
+      "address": "D17",
+      "value": "40"
+    },
+    {
+      "address": "E17",
+      "value": "ok"
+    },
+    {
+      "address": "A18",
+      "value": "East"
+    },
+    {
+      "address": "B18",
+      "value": "300"
+    },
+    {
+      "address": "C18",
+      "value": "0.20"
+    },
+    {
+      "address": "D18",
+      "value": "60"
+    },
+    {
+      "address": "E18",
+      "value": "good"
+    }
+  ]
+}

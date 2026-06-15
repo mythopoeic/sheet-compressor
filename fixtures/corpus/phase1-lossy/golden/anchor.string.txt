@@ -1,0 +1,5 @@
+A1,Region|B1,Q1|C1,Q2|D1,Q3|E1,Q4
+A2,Group 1|B2,ok|C2,ok|D2,ok|E2,ok
+A3,Group 2|B3,ok|C3,ok|D3,ok|E3,ok
+A4,Group 3|B4,ok|C4,ok|D4,ok|E4,ok
+A5,Group 4|B5,ok|C5,ok|D5,ok|E5,ok

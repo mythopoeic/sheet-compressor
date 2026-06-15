@@ -1,0 +1,5 @@
+{
+  "id": "phase1-lossy",
+  "title": "Large mostly-homogeneous region — phase-1 drops bulk of rows and cols",
+  "description": "Locks the phase-1 lossy core: a 30-row x 14-col block where only the header row and the regions column have heterogeneity >= 0.5. Every other row is the same 'ok' filler, so 25 rows and 9 cols sit outside the k-neighborhood window and are dropped. The skeleton is materially smaller than the input (5x5 of 30x14)."
+}
