@@ -219,7 +219,7 @@ For the first example above:
 }
 ```
 
-JSON serialisation in goldens uses **2-space indentation** and a trailing newline; the JSON object key order is exactly as listed in the type above.
+JSON serialisation in goldens uses **2-space indentation** and a trailing newline; the JSON object key order is exactly as listed in the type above. The output is a **UTF-8 literal** stream: non-ASCII characters (accented Latin, CJK, emoji, …) are written verbatim as their UTF-8 bytes and MUST NOT be ASCII-escaped to `\uXXXX` sequences. The same rule applies to every JSON form in this spec (§4.5, §5.4, §6.2). Porters must override their language's default where it differs — notably **Python's `json.dumps` defaults to `ensure_ascii=True`** (ASCII-escapes everything outside U+007F); pass `ensure_ascii=False`. Node `JSON.stringify` and .NET `JsonSerializer` already emit UTF-8 literal by default. The only escapes a conformant JSON serializer emits are the standard structural ones (`\"`, `\\`, `\n`, `\r`, `\t`, `\b`, `\f`, `\u00XX` for C0 controls that have no short form).
 
 ## 4. Inverted-index encoding (v0)
 
@@ -307,7 +307,7 @@ For the example above:
 }
 ```
 
-JSON serialisation in goldens uses **2-space indentation** and a trailing newline; the JSON object key order is exactly as listed in the type above.
+JSON serialisation in goldens uses **2-space indentation** and a trailing newline; the JSON object key order is exactly as listed in the type above. Output is UTF-8 literal per §3.3.
 
 ## 5. Format-aggregation encoding (v0)
 
@@ -398,7 +398,7 @@ type FormatAggregationJson = {
 };
 ```
 
-`groups` is in the same canonical type order as the string form, with the same `ranges` strings. An empty grid emits `groups: []`. JSON formatting matches §3.3: 2-space indent + trailing newline; object key order exactly as in the type above.
+`groups` is in the same canonical type order as the string form, with the same `ranges` strings. An empty grid emits `groups: []`. JSON formatting matches §3.3: 2-space indent + trailing newline + UTF-8 literal output; object key order exactly as in the type above.
 
 ## 6. Chart descriptors (v0)
 
@@ -455,7 +455,7 @@ type CompressResult = {
 };
 ```
 
-`result.charts` is a structural copy of `grid.charts` in input order, with no normalisation. Goldens lock it in as `charts.json` (2-space indent + trailing newline, just like the encoding JSONs).
+`result.charts` is a structural copy of `grid.charts` in input order, with no normalisation. Goldens lock it in as `charts.json` (2-space indent + trailing newline + UTF-8 literal output, just like the encoding JSONs in §3.3).
 
 ### 6.3 Token counting
 
@@ -478,7 +478,12 @@ tokens(s) = ceil(length_in_utf16_code_units(s) / 4)
 tokens("")    = 0
 ```
 
-The heuristic is deterministic and dependency-free so Office Script, VBA, and any other host without a tokenizer can implement it directly.
+The unit is **UTF-16 code units**, NOT code points and NOT UTF-8 bytes. This matters for any non-BMP character — a single emoji such as `😀` (U+1F600) is **two** code units, not one, so `tokens("😀") = ceil(2 / 4) = 1` and `tokens("😀😀") = ceil(4 / 4) = 1`. JavaScript / TypeScript / C# / Java / VBA / Office Script all expose string length as UTF-16 code units natively, so the heuristic falls out of `s.length`. Ports in code-point languages (e.g. Python `len(s)`) or UTF-8-byte languages (e.g. Go `len(s)`) MUST convert before applying the formula:
+
+- **Python**: `tokens(s) = math.ceil(len(s.encode("utf-16-le")) // 2 / 4)`, or equivalently `sum(2 if ord(ch) > 0xFFFF else 1 for ch in s)` for the UTF-16 length.
+- **Go**: convert to `[]uint16` via `utf16.Encode([]rune(s))` and use that slice's length.
+
+The heuristic is deterministic and dependency-free so Office Script, VBA, and any other host without a tokenizer can implement it directly. The fixture in `fixtures/corpus/unicode/` locks the UTF-16 unit count in across the corpus — a port that miscounts surrogate pairs as one unit (code-point) or many (UTF-8 bytes) will diverge on it.
 
 **Real-tokenizer adapters** — each language package SHOULD additionally expose a factory that returns a `TokenCounter` backed by that ecosystem's real BPE tokenizer (TypeScript: `gpt-tokenizer` / `js-tiktoken`; Python: `tiktoken`; C#: `SharpToken`; Go: `tiktoken-go`). The factory defaults to the `o200k_base` encoding (GPT-4o / GPT-5 family) and is configurable. The underlying tokenizer dependency is OPTIONAL — the core MUST work without it. These adapters are NOT part of the cross-language conformance check; results from a real tokenizer are inherently model-specific and need not agree byte-for-byte across languages.
 

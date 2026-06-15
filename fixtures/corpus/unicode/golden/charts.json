@@ -1,0 +1,18 @@
+[
+  {
+    "name": "scores",
+    "type": "bar",
+    "anchorRange": "D1:H10",
+    "title": "Scores — café/日本語/😀",
+    "dataRanges": [
+      "A1:B6"
+    ],
+    "series": [
+      "Score"
+    ],
+    "axes": {
+      "x": "Item",
+      "y": "点数"
+    }
+  }
+]

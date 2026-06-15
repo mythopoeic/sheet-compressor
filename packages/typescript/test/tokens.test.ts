@@ -18,7 +18,7 @@ describe("estimateTokens (heuristic)", () => {
     expect(estimateTokens("")).toBe(0);
   });
 
-  it("matches ceil(utf16 length / 4) — SPEC §4", () => {
+  it("matches ceil(utf16 length / 4) — SPEC §7", () => {
     // Boundary cases around the ceil() threshold.
     expect(estimateTokens("a")).toBe(1);
     expect(estimateTokens("abcd")).toBe(1);

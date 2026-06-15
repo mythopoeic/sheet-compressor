@@ -1,0 +1,13 @@
+A1,Item
+B1,Score
+A2,café
+B2,100
+A3,日本語
+B3,200
+A4,naïve
+B4,300
+A5,😀grin
+B5,400
+A6,𝐀bold
+B6,500
+CHART(bar)@D1:H10 title="Scores — café/日本語/😀" data=A1:B6 series=[Score] xAxis="Item" yAxis="点数"
