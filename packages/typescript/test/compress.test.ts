@@ -135,4 +135,33 @@ describe("compress() — anchor skeleton, v0", () => {
       "A1,A|B1,B|C1,C\nA2,D\nA3,E|B3,F",
     );
   });
+
+  it("defaults to phase1 end-to-end (prunes a grid keep-all would retain)", () => {
+    // 3x3 of identical text values: no row/col exceeds the 0.5 heterogeneity
+    // threshold (1 unique / 3 nonEmpty = 0.33) and there are no inter-row or
+    // inter-col type transitions, so phase1 finds zero anchors and the kept
+    // region is empty. keep-all retains every cell. The two strategies must
+    // therefore diverge through compress() — pinning the default wiring.
+    const uniformGrid: Grid = {
+      origin: { row: 1, col: 1 },
+      rows: [
+        ["x", "x", "x"],
+        ["x", "x", "x"],
+        ["x", "x", "x"],
+      ],
+    };
+    const defaultOut = compress(uniformGrid).encodings.anchor.string;
+    const keepAllOut = compress(uniformGrid, {
+      anchorStrategy: "keep-all",
+    }).encodings.anchor.string;
+    expect(defaultOut).toBe("");
+    expect(keepAllOut).toBe(
+      [
+        "A1,x|B1,x|C1,x",
+        "A2,x|B2,x|C2,x",
+        "A3,x|B3,x|C3,x",
+      ].join("\n"),
+    );
+    expect(defaultOut).not.toBe(keepAllOut);
+  });
 });
