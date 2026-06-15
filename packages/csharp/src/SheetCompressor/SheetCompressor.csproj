@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>SheetCompressor</RootNamespace>
+    <AssemblyName>SheetCompressor</AssemblyName>
+    <PackageId>SheetCompressor</PackageId>
+    <Description>SheetCompressor — compact LLM-friendly encodings for spreadsheet grids.</Description>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SharpToken" Version="2.0.3" />
+  </ItemGroup>
+</Project>
