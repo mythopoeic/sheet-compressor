@@ -14,12 +14,10 @@ function pack(row: number, col: number): number {
  * width-first greedy scan over row-major order.
  */
 export function encodeInvertedIndex(grid: Grid): Encoding<InvertedIndexJson> {
-  // Walk the grid in row-major order, bucketing every non-empty cell by value
-  // and remembering each value's first-seen ordinal so the output is ordered
-  // by first cell address (SPEC §4.4).
+  // Walk the grid in row-major order, bucketing every non-empty cell by value.
+  // Map preserves insertion order, so iterating cellsByValue later yields
+  // values ordered by first cell address — exactly the order SPEC §4.4 wants.
   const cellsByValue = new Map<string, number[]>();
-  const firstSeen = new Map<string, number>();
-  let ordinal = 0;
 
   for (let r = 0; r < grid.rows.length; r++) {
     const row = grid.rows[r] ?? [];
@@ -30,20 +28,14 @@ export function encodeInvertedIndex(grid: Grid): Encoding<InvertedIndexJson> {
       const bucket = cellsByValue.get(value);
       if (bucket === undefined) {
         cellsByValue.set(value, [key]);
-        firstSeen.set(value, ordinal++);
       } else {
         bucket.push(key);
       }
     }
   }
 
-  const values = [...cellsByValue.keys()].sort(
-    (a, b) => (firstSeen.get(a) ?? 0) - (firstSeen.get(b) ?? 0),
-  );
-
   const groups: InvertedIndexJson["groups"] = [];
-  for (const value of values) {
-    const cellKeys = cellsByValue.get(value) ?? [];
+  for (const [value, cellKeys] of cellsByValue) {
     const present = new Set(cellKeys);
     const assigned = new Set<number>();
     const ranges: string[] = [];

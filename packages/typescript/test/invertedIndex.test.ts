@@ -106,10 +106,11 @@ describe("compress() — inverted-index encoding, v0", () => {
       "A1,a\\,b\nB1,c\\|d\nC1,e\\\\f",
     );
     // JSON form keeps raw values
-    expect(
-      (encodings.invertedIndex.json as { groups: Array<{ value: string }> })
-        .groups.map((g) => g.value),
-    ).toEqual(["a,b", "c|d", "e\\f"]);
+    expect(encodings.invertedIndex.json.groups.map((g) => g.value)).toEqual([
+      "a,b",
+      "c|d",
+      "e\\f",
+    ]);
   });
 
   it("keeps whitespace-only cells (only literal '' is empty)", () => {
