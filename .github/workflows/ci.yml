@@ -22,3 +22,18 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+
+  go:
+    name: Go conformance
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/go
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache: false
+      - run: go vet ./...
+      - run: go test ./...
