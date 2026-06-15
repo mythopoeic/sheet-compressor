@@ -1,0 +1,74 @@
+{
+  "encoding": "anchor-skeleton",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "cells": [
+    {
+      "address": "A1",
+      "value": "Year"
+    },
+    {
+      "address": "B1",
+      "value": "Region"
+    },
+    {
+      "address": "C1",
+      "value": "Units"
+    },
+    {
+      "address": "D1",
+      "value": "Revenue"
+    },
+    {
+      "address": "A2",
+      "value": "2018"
+    },
+    {
+      "address": "B2",
+      "value": "Atlantis"
+    },
+    {
+      "address": "C2",
+      "value": "2020"
+    },
+    {
+      "address": "D2",
+      "value": "150000"
+    },
+    {
+      "address": "A3",
+      "value": "2019"
+    },
+    {
+      "address": "B3",
+      "value": "Avalon"
+    },
+    {
+      "address": "C3",
+      "value": "75"
+    },
+    {
+      "address": "D3",
+      "value": "82000"
+    },
+    {
+      "address": "A4",
+      "value": "2020"
+    },
+    {
+      "address": "B4",
+      "value": "El Dorado"
+    },
+    {
+      "address": "C4",
+      "value": "1999"
+    },
+    {
+      "address": "D4",
+      "value": "1200000"
+    }
+  ]
+}

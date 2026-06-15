@@ -197,3 +197,44 @@ describe("compress() — format-aggregation slot", () => {
     });
   });
 });
+
+describe("context-aware year disambiguation (SPEC §5.1.1)", () => {
+  const fa = (rows: string[][]) =>
+    encodeFormatAggregation({ origin: { row: 1, col: 1 }, rows }, estimateTokens)
+      .string;
+
+  it("keeps year candidates as YearData under a year-like header", () => {
+    expect(fa([["Year"], ["2018"], ["2019"], ["2020"]])).toBe(
+      "YearData: A2:A4\nText: A1",
+    );
+    // FY / Fiscal Year also count.
+    expect(fa([["FY"], ["2021"], ["2022"]])).toBe("YearData: A2:A3\nText: A1");
+  });
+
+  it("demotes in-range integers to IntNum under a non-year header", () => {
+    expect(fa([["Units"], ["2020"], ["5000"], ["12"]])).toBe(
+      "IntNum: A2:A4\nText: A1",
+    );
+  });
+
+  it("finds the header even when data sits between it and the candidate", () => {
+    expect(fa([["Units"], ["100"], ["2020"]])).toBe("IntNum: A2:A3\nText: A1");
+  });
+
+  it("treats a header-less column of all year-range integers as YearData", () => {
+    expect(fa([["1990"], ["2000"], ["2010"]])).toBe("YearData: A1:A3");
+  });
+
+  it("falls back to IntNum when a header-less column mixes years and non-years", () => {
+    expect(fa([["2000"], ["5"], ["2010"]])).toBe("IntNum: A1:A3");
+  });
+
+  it("treats an isolated in-range integer as IntNum, not a year", () => {
+    expect(fa([["2020"]])).toBe("IntNum: A1");
+  });
+
+  it("does not treat a month-year date header (yy-mm) as a year header", () => {
+    // "20-Aug" is Text; the lone in-range integer below has a non-year header.
+    expect(fa([["yy-mm"], ["2020"]])).toBe("IntNum: A2\nText: A1");
+  });
+});

@@ -1,0 +1,4 @@
+A1,Year|B1,Region|C1,Units|D1,Revenue
+A2,2018|B2,Atlantis|C2,2020|D2,150000
+A3,2019|B3,Avalon|C3,75|D3,82000
+A4,2020|B4,El Dorado|C4,1999|D4,1200000

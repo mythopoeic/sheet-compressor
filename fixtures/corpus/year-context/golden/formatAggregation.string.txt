@@ -1,0 +1,3 @@
+IntNum: C2:D4
+YearData: A2:A4
+Text: A1:D1,B2:B4

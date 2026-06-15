@@ -1,0 +1,5 @@
+{
+  "id": "year-context",
+  "title": "Context-aware year disambiguation",
+  "description": "The value 2020 appears under a 'Year' header (resolves to YearData) and a 'Units' header (resolves to IntNum), and 1999/2018-2020 are split the same way. Exercises the column-header/neighbour year rule in SPEC §5.1.1 — value-identical cells must classify differently by column context."
+}

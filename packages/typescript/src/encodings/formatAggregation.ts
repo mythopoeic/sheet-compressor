@@ -52,8 +52,18 @@ const FLOAT = /^-?(?:\d+\.\d*|\.\d+)$/;
 const INT = /^-?\d+$/;
 
 /**
- * Classify a single cell value into a format-aggregation category. Returns
- * `null` for the empty string (the only value considered empty per SPEC §3.1).
+ * Header labels that mark a column as holding years. Used by the context-aware
+ * year resolver (SPEC §5.1.1). Matched case-insensitively as whole words, so
+ * "yy-mm" (a month-year date header) deliberately does NOT match.
+ */
+const YEAR_HEADER = /\b(?:years?|yr|yyyy|fy|fiscal\s*years?)\b/i;
+
+/**
+ * Classify a single cell value into a format-aggregation category, by VALUE
+ * ALONE. A 4-digit value in 1900–2099 is reported as a `YearData` *candidate*;
+ * whether it stays a year or becomes `IntNum` is decided by context in
+ * `resolveYear` (SPEC §5.1.1). Returns `null` for the empty string (the only
+ * value considered empty per SPEC §3.1).
  */
 export function classify(v: string): FormatType | null {
   if (v === "") return null;
@@ -69,6 +79,55 @@ export function classify(v: string): FormatType | null {
   if (FLOAT.test(v)) return "FloatNum";
   if (INT.test(v)) return "IntNum";
   return "Text";
+}
+
+/**
+ * Find the column header governing cell (r, c): the nearest non-empty cell
+ * ABOVE it in the same column whose value classifies as Text (a label). Skips
+ * blanks and numeric cells so a header above intervening data is still found.
+ * Returns null when the column has no text label above the cell.
+ */
+function nearestHeaderAbove(grid: Grid, r: number, c: number): string | null {
+  for (let rr = r - 1; rr >= 0; rr--) {
+    const v = grid.rows[rr]?.[c] ?? "";
+    if (v === "") continue;
+    if (classify(v) === "Text") return v;
+  }
+  return null;
+}
+
+/**
+ * Decide whether a year *candidate* at (r, c) is really a `YearData` or an
+ * ordinary `IntNum` (SPEC §5.1.1). Priority:
+ *   1. Column header is the dominant signal: a year-ish header → YearData; any
+ *      other header → IntNum (suppresses a stray in-range integer like a count).
+ *   2. No header → column-neighbour signal: stays YearData only if EVERY other
+ *      integer-valued cell in the column is also a year (1900–2099) and there is
+ *      at least one such neighbour.
+ *   3. Isolated in-range integer with no header and no integer neighbours →
+ *      IntNum (we don't guess "year" from a lone value).
+ */
+function resolveYear(grid: Grid, r: number, c: number): FormatType {
+  const header = nearestHeaderAbove(grid, r, c);
+  if (header !== null) {
+    return YEAR_HEADER.test(header) ? "YearData" : "IntNum";
+  }
+
+  let intSiblings = 0;
+  let yearSiblings = 0;
+  const numRows = grid.rows.length;
+  for (let rr = 0; rr < numRows; rr++) {
+    if (rr === r) continue;
+    const t = classify(grid.rows[rr]?.[c] ?? "");
+    if (t === "YearData") {
+      intSiblings++;
+      yearSiblings++;
+    } else if (t === "IntNum") {
+      intSiblings++;
+    }
+  }
+  if (intSiblings === 0) return "IntNum";
+  return yearSiblings === intSiblings ? "YearData" : "IntNum";
 }
 
 type Rect = {
@@ -101,6 +160,15 @@ function aggregate(grid: Grid): Rect[] {
       return Array.from({ length: numCols }, (_, c) => classify(row[c] ?? ""));
     },
   );
+
+  // Context-aware year resolution (SPEC §5.1.1): a value-level YearData stays a
+  // year only when its column header / neighbours support it; otherwise IntNum.
+  for (let r = 0; r < numRows; r++) {
+    const typeRow = types[r]!;
+    for (let c = 0; c < numCols; c++) {
+      if (typeRow[c] === "YearData") typeRow[c] = resolveYear(grid, r, c);
+    }
+  }
 
   const claimed: boolean[][] = Array.from({ length: numRows }, () =>
     new Array<boolean>(numCols).fill(false),

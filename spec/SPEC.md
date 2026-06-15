@@ -330,9 +330,21 @@ The category set, in canonical emission order:
 | 10    | `Boolean`        | case-insensitive `true` or `false`                                      |
 | 11    | `Text`           | fallback for any non-empty value that matches nothing above             |
 
-Classification probes patterns in the priority order **Boolean → EmailData → ScientificNum → PercentageNum → CurrencyData → DateData → TimeData → YearData → FloatNum → IntNum → Text**, and the first match wins. The priority order is what makes `1900` a `YearData` (not `IntNum`) and `1.5e10` a `ScientificNum` (not `FloatNum`).
+Classification probes patterns in the priority order **Boolean → EmailData → ScientificNum → PercentageNum → CurrencyData → DateData → TimeData → YearData → FloatNum → IntNum → Text**, and the first match wins. The priority order is what makes `1900` a `YearData` *candidate* (not `IntNum`) and `1.5e10` a `ScientificNum` (not `FloatNum`). A `YearData` candidate is then confirmed or demoted to `IntNum` by the context rule in §5.1.1.
 
 A cell with the empty string `""` has no type and never participates in aggregation (per §3.1).
+
+### 5.1.1 Context-aware year disambiguation
+
+`YearData` from §5.1 is only a **candidate** based on the value alone (a 4-digit integer in 1900–2099). Many such integers are not years at all — a unit count, a rank, an ID. Each year candidate is therefore re-resolved to either `YearData` or `IntNum` using its column context, in this priority order:
+
+1. **Column header (dominant signal).** The header is the nearest cell ABOVE the candidate, in the same column, whose value classifies as `Text` (blanks and numeric cells are skipped, so a header above intervening data still counts).
+   - Header matches `\b(years?|yr|yyyy|fy|fiscal\s*years?)\b` (case-insensitive) → **`YearData`**.
+   - Header present but not year-like → **`IntNum`** (a non-year header suppresses a stray in-range integer). This is the strongest signal — a `Year` header wins even if a value strays outside 1900–2099, and a `Units` header demotes an in-range `2020`.
+2. **No header → column-neighbour signal.** Stays `YearData` only if **every** other integer-valued cell in the same column is also a year (1900–2099) **and** there is at least one such neighbour; otherwise `IntNum`.
+3. **Isolated** (no header, no integer neighbours) → **`IntNum`**. A lone in-range integer is not guessed to be a year.
+
+The check is column-oriented because spreadsheet fields run down columns. Resolution is per-cell but, because the header and neighbour signals are column-wide, a column resolves consistently in practice.
 
 ### 5.2 Aggregation algorithm
 
