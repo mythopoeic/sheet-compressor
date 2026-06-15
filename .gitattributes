@@ -1,0 +1,9 @@
+# Enforce LF for all text files so the byte-exact golden corpus (and every
+# cross-language port's conformance check) is stable regardless of the platform
+# a contributor or AFK sandbox commits from. Without this, autocrlf=true on
+# Windows lets CRLF blobs slip in (a run-2 Sandcastle sandbox did exactly that
+# for the unicode goldens, breaking conformance). Normalize once, here.
+* text=auto eol=lf
+
+# Spreadsheet sample files are binary — never apply EOL conversion.
+*.xlsx binary
