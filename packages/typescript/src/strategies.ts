@@ -19,11 +19,7 @@ const PHASE1_HET_THRESHOLD = 0.5;
 export const keepAllStrategy: AnchorStrategy = {
   name: "keep-all",
   detect(grid: Grid): AnchorDetection {
-    const rowCount = grid.rows.length;
-    let colCount = 0;
-    for (const row of grid.rows) {
-      if (row.length > colCount) colCount = row.length;
-    }
+    const { rowCount, colCount } = gridDimensions(grid);
     const keptRows = new Set<number>();
     for (let r = 0; r < rowCount; r++) keptRows.add(r);
     const keptCols = new Set<number>();
@@ -41,11 +37,7 @@ export const keepAllStrategy: AnchorStrategy = {
 export const phase1Strategy: AnchorStrategy = {
   name: "phase1",
   detect(grid: Grid): AnchorDetection {
-    const rowCount = grid.rows.length;
-    let colCount = 0;
-    for (const row of grid.rows) {
-      if (row.length > colCount) colCount = row.length;
-    }
+    const { rowCount, colCount } = gridDimensions(grid);
     if (rowCount === 0 || colCount === 0) {
       return { keptRows: new Set(), keptCols: new Set() };
     }
@@ -111,6 +103,15 @@ export const phase1Strategy: AnchorStrategy = {
     return { keptRows, keptCols };
   },
 };
+
+function gridDimensions(grid: Grid): { rowCount: number; colCount: number } {
+  const rowCount = grid.rows.length;
+  let colCount = 0;
+  for (const row of grid.rows) {
+    if (row.length > colCount) colCount = row.length;
+  }
+  return { rowCount, colCount };
+}
 
 const NUMERIC_RE = /^-?\d+(\.\d+)?$/;
 
