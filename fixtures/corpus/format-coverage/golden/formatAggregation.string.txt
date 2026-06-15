@@ -1,0 +1,11 @@
+IntNum: B2:B5
+FloatNum: C2:C5
+ScientificNum: D2:D5
+PercentageNum: E2:E5
+CurrencyData: F2:F5
+DateData: G2:G5
+TimeData: H2:H5
+YearData: A2:A5
+EmailData: J2:J5
+Boolean: I2:I5
+Text: A1:K1,K2:K5

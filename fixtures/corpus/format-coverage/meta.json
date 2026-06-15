@@ -1,0 +1,5 @@
+{
+  "id": "format-coverage",
+  "title": "Format aggregation: every category exercised at least once",
+  "description": "One column per SPEC §5.1 category — IntNum, FloatNum, ScientificNum, PercentageNum, CurrencyData ($/€/£/¥), DateData, TimeData (12h + 24h), YearData, EmailData, Boolean, Text. A porter that mis-implements any category (e.g. UTF-8 byte-class breaking € / £ / ¥; a missing 12-hour TimeData branch; Boolean not being case-insensitive) will diverge on these goldens."
+}

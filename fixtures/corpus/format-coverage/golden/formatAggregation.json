@@ -1,0 +1,77 @@
+{
+  "encoding": "format-aggregation",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "type": "IntNum",
+      "ranges": [
+        "B2:B5"
+      ]
+    },
+    {
+      "type": "FloatNum",
+      "ranges": [
+        "C2:C5"
+      ]
+    },
+    {
+      "type": "ScientificNum",
+      "ranges": [
+        "D2:D5"
+      ]
+    },
+    {
+      "type": "PercentageNum",
+      "ranges": [
+        "E2:E5"
+      ]
+    },
+    {
+      "type": "CurrencyData",
+      "ranges": [
+        "F2:F5"
+      ]
+    },
+    {
+      "type": "DateData",
+      "ranges": [
+        "G2:G5"
+      ]
+    },
+    {
+      "type": "TimeData",
+      "ranges": [
+        "H2:H5"
+      ]
+    },
+    {
+      "type": "YearData",
+      "ranges": [
+        "A2:A5"
+      ]
+    },
+    {
+      "type": "EmailData",
+      "ranges": [
+        "J2:J5"
+      ]
+    },
+    {
+      "type": "Boolean",
+      "ranges": [
+        "I2:I5"
+      ]
+    },
+    {
+      "type": "Text",
+      "ranges": [
+        "A1:K1",
+        "K2:K5"
+      ]
+    }
+  ]
+}

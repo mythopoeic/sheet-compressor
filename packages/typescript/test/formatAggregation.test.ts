@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { classify, encodeFormatAggregation } from "../src/encodings/formatAggregation.ts";
 import { compress, estimateTokens } from "../src/index.ts";
-import type { Grid } from "../src/index.ts";
+import { loadFixtures } from "../src/fixtures.ts";
+import type { FormatType, Grid } from "../src/index.ts";
 
 describe("classify()", () => {
   it("classifies numeric primitives", () => {
@@ -236,5 +237,36 @@ describe("context-aware year disambiguation (SPEC §5.1.1)", () => {
   it("does not treat a month-year date header (yy-mm) as a year header", () => {
     // "20-Aug" is Text; the lone in-range integer below has a non-year header.
     expect(fa([["yy-mm"], ["2020"]])).toBe("IntNum: A2\nText: A1");
+  });
+});
+
+describe("corpus coverage (issue #22)", () => {
+  it("the format-coverage fixture exercises every FormatType category", () => {
+    // SPEC §5.1: a porter who mis-implements any one category must trip on the
+    // corpus, not pass it. Pin the intent here so a future fixture edit that
+    // silently drops (e.g.) CurrencyData is caught as a coverage regression
+    // instead of being hidden by a re-generated golden.
+    const all: readonly FormatType[] = [
+      "IntNum",
+      "FloatNum",
+      "ScientificNum",
+      "PercentageNum",
+      "CurrencyData",
+      "DateData",
+      "TimeData",
+      "YearData",
+      "EmailData",
+      "Boolean",
+      "Text",
+    ];
+    const fx = loadFixtures().find((f) => f.id === "format-coverage");
+    expect(fx, "format-coverage fixture is missing").toBeDefined();
+    const { encodings } = compress(fx!.input);
+    const present = new Set(
+      encodings.formatAggregation.json.groups.map((g) => g.type),
+    );
+    for (const t of all) {
+      expect(present, `${t} missing from format-coverage`).toContain(t);
+    }
   });
 });

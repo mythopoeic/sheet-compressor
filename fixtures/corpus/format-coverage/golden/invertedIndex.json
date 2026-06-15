@@ -1,0 +1,340 @@
+{
+  "encoding": "inverted-index",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "value": "Year",
+      "ranges": [
+        "A1"
+      ]
+    },
+    {
+      "value": "Revenue",
+      "ranges": [
+        "B1"
+      ]
+    },
+    {
+      "value": "Pi",
+      "ranges": [
+        "C1"
+      ]
+    },
+    {
+      "value": "Energy",
+      "ranges": [
+        "D1"
+      ]
+    },
+    {
+      "value": "Tax",
+      "ranges": [
+        "E1"
+      ]
+    },
+    {
+      "value": "Price",
+      "ranges": [
+        "F1"
+      ]
+    },
+    {
+      "value": "Issued",
+      "ranges": [
+        "G1"
+      ]
+    },
+    {
+      "value": "Open",
+      "ranges": [
+        "H1"
+      ]
+    },
+    {
+      "value": "Active",
+      "ranges": [
+        "I1"
+      ]
+    },
+    {
+      "value": "Contact",
+      "ranges": [
+        "J1"
+      ]
+    },
+    {
+      "value": "Item",
+      "ranges": [
+        "K1"
+      ]
+    },
+    {
+      "value": "2021",
+      "ranges": [
+        "A2"
+      ]
+    },
+    {
+      "value": "100",
+      "ranges": [
+        "B2"
+      ]
+    },
+    {
+      "value": "3.14",
+      "ranges": [
+        "C2"
+      ]
+    },
+    {
+      "value": "1.5e10",
+      "ranges": [
+        "D2"
+      ]
+    },
+    {
+      "value": "50%",
+      "ranges": [
+        "E2"
+      ]
+    },
+    {
+      "value": "$99",
+      "ranges": [
+        "F2"
+      ]
+    },
+    {
+      "value": "2024-01-15",
+      "ranges": [
+        "G2"
+      ]
+    },
+    {
+      "value": "09:30",
+      "ranges": [
+        "H2"
+      ]
+    },
+    {
+      "value": "TRUE",
+      "ranges": [
+        "I2"
+      ]
+    },
+    {
+      "value": "a@b.co",
+      "ranges": [
+        "J2"
+      ]
+    },
+    {
+      "value": "Apple",
+      "ranges": [
+        "K2"
+      ]
+    },
+    {
+      "value": "2022",
+      "ranges": [
+        "A3"
+      ]
+    },
+    {
+      "value": "200",
+      "ranges": [
+        "B3"
+      ]
+    },
+    {
+      "value": "2.71",
+      "ranges": [
+        "C3"
+      ]
+    },
+    {
+      "value": "-2.0E-3",
+      "ranges": [
+        "D3"
+      ]
+    },
+    {
+      "value": "-12.5%",
+      "ranges": [
+        "E3"
+      ]
+    },
+    {
+      "value": "€42",
+      "ranges": [
+        "F3"
+      ]
+    },
+    {
+      "value": "2024-02-20",
+      "ranges": [
+        "G3"
+      ]
+    },
+    {
+      "value": "12:30 PM",
+      "ranges": [
+        "H3"
+      ]
+    },
+    {
+      "value": "False",
+      "ranges": [
+        "I3"
+      ]
+    },
+    {
+      "value": "c@d.io",
+      "ranges": [
+        "J3"
+      ]
+    },
+    {
+      "value": "Pear",
+      "ranges": [
+        "K3"
+      ]
+    },
+    {
+      "value": "2023",
+      "ranges": [
+        "A4"
+      ]
+    },
+    {
+      "value": "300",
+      "ranges": [
+        "B4"
+      ]
+    },
+    {
+      "value": "1.41",
+      "ranges": [
+        "C4"
+      ]
+    },
+    {
+      "value": "6.022E23",
+      "ranges": [
+        "D4"
+      ]
+    },
+    {
+      "value": "8.25%",
+      "ranges": [
+        "E4"
+      ]
+    },
+    {
+      "value": "£10.00",
+      "ranges": [
+        "F4"
+      ]
+    },
+    {
+      "value": "2024-03-10",
+      "ranges": [
+        "G4"
+      ]
+    },
+    {
+      "value": "14:45:30",
+      "ranges": [
+        "H4"
+      ]
+    },
+    {
+      "value": "True",
+      "ranges": [
+        "I4"
+      ]
+    },
+    {
+      "value": "e@f.co",
+      "ranges": [
+        "J4"
+      ]
+    },
+    {
+      "value": "Plum",
+      "ranges": [
+        "K4"
+      ]
+    },
+    {
+      "value": "2024",
+      "ranges": [
+        "A5"
+      ]
+    },
+    {
+      "value": "400",
+      "ranges": [
+        "B5"
+      ]
+    },
+    {
+      "value": "0.5",
+      "ranges": [
+        "C5"
+      ]
+    },
+    {
+      "value": "9.81e0",
+      "ranges": [
+        "D5"
+      ]
+    },
+    {
+      "value": "100%",
+      "ranges": [
+        "E5"
+      ]
+    },
+    {
+      "value": "¥99",
+      "ranges": [
+        "F5"
+      ]
+    },
+    {
+      "value": "2024-04-25",
+      "ranges": [
+        "G5"
+      ]
+    },
+    {
+      "value": "1:05am",
+      "ranges": [
+        "H5"
+      ]
+    },
+    {
+      "value": "false",
+      "ranges": [
+        "I5"
+      ]
+    },
+    {
+      "value": "g@h.co",
+      "ranges": [
+        "J5"
+      ]
+    },
+    {
+      "value": "Grape",
+      "ranges": [
+        "K5"
+      ]
+    }
+  ]
+}
