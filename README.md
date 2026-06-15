@@ -35,7 +35,9 @@ can render (Office Script, desktop Excel via VBA) may additionally attach a base
   language-neutral fixture corpus so they produce identical output. See [`spec/`](./spec) and
   [`fixtures/`](./fixtures).
 - **Prompt templates included.** Per-encoding "reader" prompts that teach an LLM to decode
-  the output, plus a few task templates. See [`prompts/`](./prompts).
+  the output, plus task templates (table/region detection, cell-value lookup, sheet Q&A) and
+  a snippet for reading `CHART(...)` descriptors. Authored once in [`prompts/`](./prompts) and
+  mirrored byte-for-byte into every language package — see [SPEC §9](./spec/SPEC.md#9-prompt-templates-shared-source).
 
 ## Languages
 
