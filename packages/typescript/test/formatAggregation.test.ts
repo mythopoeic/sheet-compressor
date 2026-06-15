@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { classify, encodeFormatAggregation } from "../src/encodings/formatAggregation.ts";
-import { compress } from "../src/index.ts";
+import { compress, estimateTokens } from "../src/index.ts";
 import type { Grid } from "../src/index.ts";
 
 describe("classify()", () => {
@@ -72,7 +72,7 @@ describe("encodeFormatAggregation()", () => {
     const out = encodeFormatAggregation({
       origin: { row: 1, col: 1 },
       rows: [],
-    });
+    }, estimateTokens);
     expect(out.string).toBe("");
     expect(out.json).toEqual({
       encoding: "format-aggregation",
@@ -87,7 +87,7 @@ describe("encodeFormatAggregation()", () => {
     const out = encodeFormatAggregation({
       origin: { row: 1, col: 1 },
       rows: [["1"]],
-    });
+    }, estimateTokens);
     expect(out.string).toBe("IntNum: A1");
   });
 
@@ -95,7 +95,7 @@ describe("encodeFormatAggregation()", () => {
     const out = encodeFormatAggregation({
       origin: { row: 1, col: 1 },
       rows: [["1", "2", "3"]],
-    });
+    }, estimateTokens);
     expect(out.string).toBe("IntNum: A1:C1");
   });
 
@@ -103,7 +103,7 @@ describe("encodeFormatAggregation()", () => {
     const out = encodeFormatAggregation({
       origin: { row: 1, col: 1 },
       rows: [["1"], ["2"], ["3"]],
-    });
+    }, estimateTokens);
     expect(out.string).toBe("IntNum: A1:A3");
   });
 
@@ -114,7 +114,7 @@ describe("encodeFormatAggregation()", () => {
         ["1", "2"],
         ["3", "4"],
       ],
-    });
+    }, estimateTokens);
     expect(out.string).toBe("IntNum: A1:B2");
   });
 
@@ -122,7 +122,7 @@ describe("encodeFormatAggregation()", () => {
     const out = encodeFormatAggregation({
       origin: { row: 1, col: 1 },
       rows: [["1", "", "3"]],
-    });
+    }, estimateTokens);
     expect(out.string).toBe("IntNum: A1,C1");
   });
 
@@ -138,7 +138,7 @@ describe("encodeFormatAggregation()", () => {
         ["2024-01-15", "Apple", "10", "1.50", "2.00"],
         ["2024-01-16", "Pear", "20", "3.50", "4.00"],
       ],
-    });
+    }, estimateTokens);
     expect(out.string).toBe(
       [
         "IntNum: C2:C3",
@@ -153,7 +153,7 @@ describe("encodeFormatAggregation()", () => {
     const out = encodeFormatAggregation({
       origin: { row: 5, col: 3 },
       rows: [["1", "2"]],
-    });
+    }, estimateTokens);
     expect(out.string).toBe("IntNum: C5:D5");
   });
 
@@ -161,7 +161,7 @@ describe("encodeFormatAggregation()", () => {
     const out = encodeFormatAggregation({
       origin: { row: 1, col: 1 },
       rows: [["1", "2"]],
-    });
+    }, estimateTokens);
     expect(out.tokenEstimate).toBe(Math.ceil(out.string.length / 4));
   });
 });

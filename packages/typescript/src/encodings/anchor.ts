@@ -1,11 +1,17 @@
 import { a1 } from "../address.ts";
-import { estimateTokens } from "../tokens.ts";
-import type { AnchorDetection, AnchorJson, Encoding, Grid } from "../types.ts";
+import type {
+  AnchorDetection,
+  AnchorJson,
+  Encoding,
+  Grid,
+  TokenCounter,
+} from "../types.ts";
 import { escapeValue } from "./escape.ts";
 
 export function encodeAnchor(
   grid: Grid,
   detection: AnchorDetection,
+  tokenCounter: TokenCounter,
 ): Encoding<AnchorJson> {
   const cells: AnchorJson["cells"] = [];
   const lines: string[] = [];
@@ -34,5 +40,5 @@ export function encodeAnchor(
     origin: { row: grid.origin.row, col: grid.origin.col },
     cells,
   };
-  return { string, json, tokenEstimate: estimateTokens(string) };
+  return { string, json, tokenEstimate: tokenCounter(string) };
 }

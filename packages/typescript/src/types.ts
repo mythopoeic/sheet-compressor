@@ -62,12 +62,25 @@ export type AnchorStrategy = {
 /** Built-in strategy selectors. */
 export type AnchorStrategyName = "keep-all" | "phase1";
 
+/**
+ * Pure function string → token count. Injected via {@link CompressOptions} so
+ * callers can supply a real tokenizer (gpt-tokenizer / js-tiktoken / …) without
+ * coupling the core to one. Must be deterministic for a given input.
+ */
+export type TokenCounter = (s: string) => number;
+
 export type CompressOptions = {
   /**
    * Anchor-detection strategy. Pass a built-in name or a custom
    * `AnchorStrategy`. Defaults to `"phase1"`.
    */
   anchorStrategy?: AnchorStrategyName | AnchorStrategy;
+  /**
+   * Counts tokens for the raw-baseline and each encoding's `string`. Defaults
+   * to the shared SPEC heuristic (see `estimateTokens`) when omitted, which is
+   * the only counter every cross-language port is required to agree on.
+   */
+  tokenCounter?: TokenCounter;
 };
 
 export type AnchorJson = {

@@ -1,6 +1,10 @@
 import { a1 } from "../address.ts";
-import { estimateTokens } from "../tokens.ts";
-import type { Encoding, Grid, InvertedIndexJson } from "../types.ts";
+import type {
+  Encoding,
+  Grid,
+  InvertedIndexJson,
+  TokenCounter,
+} from "../types.ts";
 import { escapeValue } from "./escape.ts";
 
 /** Pack absolute (row, col) into a single number for Map/Set keys. */
@@ -13,7 +17,10 @@ function pack(row: number, col: number): number {
  * each group's cells into the minimal list of A1 rectangles via a deterministic
  * width-first greedy scan over row-major order.
  */
-export function encodeInvertedIndex(grid: Grid): Encoding<InvertedIndexJson> {
+export function encodeInvertedIndex(
+  grid: Grid,
+  tokenCounter: TokenCounter,
+): Encoding<InvertedIndexJson> {
   // Walk the grid in row-major order, bucketing every non-empty cell by value.
   // Map preserves insertion order, so iterating cellsByValue later yields
   // values ordered by first cell address — exactly the order SPEC §4.4 wants.
@@ -101,5 +108,5 @@ export function encodeInvertedIndex(grid: Grid): Encoding<InvertedIndexJson> {
     origin: { row: grid.origin.row, col: grid.origin.col },
     groups,
   };
-  return { string, json, tokenEstimate: estimateTokens(string) };
+  return { string, json, tokenEstimate: tokenCounter(string) };
 }

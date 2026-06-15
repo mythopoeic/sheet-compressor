@@ -12,12 +12,13 @@ export function compress(
 ): CompressResult {
   const strategy = resolveStrategy(options.anchorStrategy);
   const detection = strategy.detect(grid);
+  const tokenCounter = options.tokenCounter ?? estimateTokens;
   return {
     encodings: {
-      anchor: encodeAnchor(grid, detection),
-      invertedIndex: encodeInvertedIndex(grid),
-      formatAggregation: encodeFormatAggregation(grid),
+      anchor: encodeAnchor(grid, detection, tokenCounter),
+      invertedIndex: encodeInvertedIndex(grid, tokenCounter),
+      formatAggregation: encodeFormatAggregation(grid, tokenCounter),
     },
-    rawBaseline: { tokenEstimate: estimateTokens(vanillaEncode(grid)) },
+    rawBaseline: { tokenEstimate: tokenCounter(vanillaEncode(grid)) },
   };
 }

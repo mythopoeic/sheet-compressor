@@ -2,7 +2,7 @@
 
 Language-neutral contract for the `sheet-compressor` library. Every implementation (TypeScript reference, Python, C#, Go, VBA, Office Script) MUST produce byte-identical output for the same input on every fixture in [`fixtures/`](../fixtures).
 
-This is **v0**: the **structural-anchor skeleton**, **inverted-index**, and **format-aggregation** encodings are specified. Anchor detection sits behind a swappable strategy interface (§3.1) with two built-ins: the Phase-1 grid-only detector (default) and a `keep-all` fallback. Chart descriptors and the Phase-2 styling-aware detector will be added in later slices — but the input and output **contracts** below already reserve their shape so they can be filled in without breaking changes.
+This is **v0**: the **structural-anchor skeleton**, **inverted-index**, and **format-aggregation** encodings are specified. Anchor detection sits behind a swappable strategy interface (§3.1) with two built-ins: the Phase-1 grid-only detector (default) and a `keep-all` fallback. Token counting is performed by an injectable counter (§6) that defaults to a shared cross-language heuristic. Chart descriptors and the Phase-2 styling-aware detector will be added in later slices — but the input and output **contracts** below already reserve their shape so they can be filled in without breaking changes.
 
 ## 1. Input contract
 
@@ -382,16 +382,26 @@ type FormatAggregationJson = {
 
 `groups` is in the same canonical type order as the string form, with the same `ranges` strings. An empty grid emits `groups: []`. JSON formatting matches §3.3: 2-space indent + trailing newline; object key order exactly as in the type above.
 
-## 6. Token counting (v0)
+## 6. Token counting
 
-v0 uses one shared **heuristic counter** for both `rawBaseline.tokenEstimate` and each `Encoding.tokenEstimate`. Real tokenizers (tiktoken / gpt-tokenizer / SharpToken / …) will be wired in a later slice via the injectable-counter interface from the PRD; until they land, the heuristic is the only counter and every implementation MUST agree on its output.
+Token counting is performed by an **injectable counter**. `compress()` accepts a caller-supplied function
 
-**Heuristic** (deterministic, dependency-free):
+```
+TokenCounter = (s: string) => number
+```
+
+and applies it to both `rawBaseline.tokenEstimate` and each `Encoding.tokenEstimate`. The counter MUST be deterministic for a given input: every call MUST return the same count for the same string within a run.
+
+**Default (heuristic)** — when no counter is supplied, every implementation MUST fall back to the shared heuristic below. The heuristic is the cross-language conformance baseline: the golden fixtures in `fixtures/corpus/` encode its output, and every port's conformance test diffs against those goldens with NO counter supplied.
 
 ```
 tokens(s) = ceil(length_in_utf16_code_units(s) / 4)
 tokens("")    = 0
 ```
+
+The heuristic is deterministic and dependency-free so Office Script, VBA, and any other host without a tokenizer can implement it directly.
+
+**Real-tokenizer adapters** — each language package SHOULD additionally expose a factory that returns a `TokenCounter` backed by that ecosystem's real BPE tokenizer (TypeScript: `gpt-tokenizer` / `js-tiktoken`; Python: `tiktoken`; C#: `SharpToken`; Go: `tiktoken-go`). The factory defaults to the `o200k_base` encoding (GPT-4o / GPT-5 family) and is configurable. The underlying tokenizer dependency is OPTIONAL — the core MUST work without it. These adapters are NOT part of the cross-language conformance check; results from a real tokenizer are inherently model-specific and need not agree byte-for-byte across languages.
 
 `rawBaseline.tokenEstimate` is computed over the **vanilla encoding** of the grid: every row is joined with ` | ` (space-pipe-space), rows are joined with `\n`, with no escaping and no address prefixes. This is the un-compressed baseline a caller would otherwise paste into a prompt.
 

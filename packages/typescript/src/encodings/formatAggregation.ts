@@ -1,11 +1,11 @@
 import { a1 } from "../address.ts";
-import { estimateTokens } from "../tokens.ts";
 import type {
   Encoding,
   FormatAggregationJson,
   FormatType,
   Grid,
   Origin,
+  TokenCounter,
 } from "../types.ts";
 
 /**
@@ -165,6 +165,7 @@ function rectToRange(rect: Rect, origin: Origin): string {
 
 export function encodeFormatAggregation(
   grid: Grid,
+  tokenCounter: TokenCounter,
 ): Encoding<FormatAggregationJson> {
   const rects = aggregate(grid);
 
@@ -193,5 +194,5 @@ export function encodeFormatAggregation(
     groups,
   };
 
-  return { string, json, tokenEstimate: estimateTokens(string) };
+  return { string, json, tokenEstimate: tokenCounter(string) };
 }

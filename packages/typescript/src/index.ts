@@ -5,7 +5,12 @@ export {
   phase1Strategy,
   resolveStrategy,
 } from "./strategies.ts";
-export { estimateTokens } from "./tokens.ts";
+export {
+  createTokenCounter,
+  estimateTokens,
+  type CreateTokenCounterOptions,
+  type TiktokenEncoding,
+} from "./tokens.ts";
 export type {
   AnchorDetection,
   AnchorJson,
@@ -23,4 +28,5 @@ export type {
   Grid,
   InvertedIndexJson,
   Origin,
+  TokenCounter,
 } from "./types.ts";
