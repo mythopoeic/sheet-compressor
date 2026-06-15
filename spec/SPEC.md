@@ -51,6 +51,7 @@ type ChartDescriptor = {
 - Columns use the Excel letter scheme: `A..Z`, `AA..AZ`, `BA..ZZ`, `AAA..`, etc.
 - `origin` is the address of the grid's top-left cell. The cell at `rows[r][c]` therefore lives at column `origin.col + c` and row `origin.row + r`.
 - A blank `Grid` (`rows: []` or all-empty rows) is valid and produces an empty encoding.
+- Let `C` be the maximum row length across all rows. Every stage conceptually pads each row to `C` cells with `""` before processing, so a ragged row's missing trailing cells are treated as empty cells **at their column positions**. This matters for the column-aware stages (anchor detection, format aggregation): a short row contributes `""` (an empty/`null` type), not "no cell".
 
 ## 2. Output contract
 
@@ -230,7 +231,7 @@ The inverted-index input is the same set of non-empty cells the anchor skeleton 
 
 ### 4.2 Range merging
 
-For each distinct value `v`, the cells holding `v` are collapsed into the minimum-length list of A1 ranges via the following deterministic greedy procedure:
+For each distinct value `v`, the cells holding `v` are collapsed into a deterministic list of A1 ranges via the following greedy procedure (not guaranteed minimal — see the L/T-shape caveat below):
 
 1. Let `S` be the set of (row, col) coordinates of cells with value `v` (absolute, i.e. already offset by `origin`).
 2. Iterate cells of `S` in **row-major order** (rows top-to-bottom, columns left-to-right). For each cell `(r, c)` that has not yet been assigned to a range:
@@ -258,7 +259,7 @@ The string form is a sequence of value groups. Each group is rendered as:
 - Ranges within a group are joined with `|`, in the order produced by the merging procedure (top-left rectangle first, row-major).
 - The list of ranges and the value are separated by a single `,`.
 - Groups are joined with `\n`, with **no trailing newline**.
-- Groups are ordered by the **first cell address** (row-major) of the value in the grid: the value whose first cell appears earliest comes first.
+- Groups are ordered by the **first cell address** (row-major) of the value in the grid: the value whose first cell appears earliest comes first. This order MUST be computed from the data — i.e. the row-major rank of each value's first cell — and never inherited from a language's map/dict iteration order (which is unspecified or randomized in several target languages).
 - Value escaping is identical to the anchor encoding (§3.2 rules 1–6). Range tokens contain only `A-Z`, `0-9`, and `:`, so they never need escaping.
 - An all-empty grid produces the empty string.
 
@@ -336,13 +337,13 @@ A cell with the empty string `""` has no type and never participates in aggregat
 
 ### 5.1.1 Context-aware year disambiguation
 
-`YearData` from §5.1 is only a **candidate** based on the value alone (a 4-digit integer in 1900–2099). Many such integers are not years at all — a unit count, a rank, an ID. Each year candidate is therefore re-resolved to either `YearData` or `IntNum` using its column context, in this priority order:
+Disambiguation applies **only to year candidates**: values that already matched the §5.1 `YearData` pattern (a 4-digit integer in 1900–2099). An integer outside that range is always `IntNum` and is never promoted to `YearData`, regardless of any header. Many in-range integers are not years either — a unit count, a rank, an ID — so each candidate is re-resolved to either `YearData` or `IntNum` using its column context, in this priority order:
 
 1. **Column header (dominant signal).** The header is the nearest cell ABOVE the candidate, in the same column, whose value classifies as `Text` (blanks and numeric cells are skipped, so a header above intervening data still counts).
    - Header matches `\b(years?|yr|yyyy|fy|fiscal\s*years?)\b` (case-insensitive) → **`YearData`**.
-   - Header present but not year-like → **`IntNum`** (a non-year header suppresses a stray in-range integer). This is the strongest signal — a `Year` header wins even if a value strays outside 1900–2099, and a `Units` header demotes an in-range `2020`.
-2. **No header → column-neighbour signal.** Stays `YearData` only if **every** other integer-valued cell in the same column is also a year (1900–2099) **and** there is at least one such neighbour; otherwise `IntNum`.
-3. **Isolated** (no header, no integer neighbours) → **`IntNum`**. A lone in-range integer is not guessed to be a year.
+   - Header present but not year-like → **`IntNum`** (a non-year header demotes an in-range candidate — e.g. a `2020` under `Units` is an integer). The header is the strongest signal and overrides the neighbour test below.
+2. **No header → column-neighbour signal.** Stays `YearData` only if **every** other integer-valued cell in the same column is also a year candidate (1900–2099) **and** there is at least one such neighbour; otherwise `IntNum`. Neighbour evaluation uses the **value-level** classification of §5.1 (is the sibling an in-range year candidate or a plain `IntNum`), NOT the post-context resolved type — so the test is well-defined and non-circular.
+3. **Isolated** (no header above, no integer neighbours — e.g. a candidate in row 0, or the only integer in its column) → **`IntNum`**. A lone in-range integer is not guessed to be a year.
 
 The check is column-oriented because spreadsheet fields run down columns. Resolution is per-cell but, because the header and neighbour signals are column-wide, a column resolves consistently in practice.
 
