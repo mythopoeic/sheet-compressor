@@ -81,26 +81,22 @@ function loadXlsx(): XlsxModule {
 /* Cell-type mapping                                                          */
 /* -------------------------------------------------------------------------- */
 
+const T_TO_DATA_TYPE: Record<XlsxCell["t"], DataType> = {
+  s: "text",
+  n: "number",
+  b: "bool",
+  d: "date",
+  e: "error",
+  z: "empty",
+};
+
 function inferDataType(cell: XlsxCell | undefined): DataType {
   if (!cell) return "empty";
   // Formula wins over type — a `=SUM()` cell is `formula` regardless of the
   // underlying evaluated type. The core only ever reads dataType (Phase 2
   // adds style flags) so collapsing here is safe.
   if (cell.f) return "formula";
-  switch (cell.t) {
-    case "s":
-      return "text";
-    case "n":
-      return "number";
-    case "b":
-      return "bool";
-    case "d":
-      return "date";
-    case "e":
-      return "error";
-    case "z":
-      return "empty";
-  }
+  return T_TO_DATA_TYPE[cell.t];
 }
 
 function cellText(cell: XlsxCell | undefined): string {
@@ -194,13 +190,11 @@ function normalizeRange(ref: string): string {
   return tail.replace(/\$/g, "").replace(/^'|'$/g, "");
 }
 
-function parseChartXml(xml: string): {
-  type: ChartType;
-  title?: string;
-  axes?: { x?: string; y?: string };
-  series?: string[];
-  dataRanges?: string[];
-} {
+/** Everything `parseChartXml` can derive from a chart XML part. The two
+ * fields it can't (`name`, `anchorRange`) live on the parent drawing/anchor. */
+type ParsedChart = Omit<ChartDescriptor, "name" | "anchorRange">;
+
+function parseChartXml(xml: string): ParsedChart {
   // Chart type: first known chart-body element under plotArea.
   let chartType: ChartType = "other";
   for (const [tag, t] of Object.entries(CHART_BODY_TO_TYPE)) {
@@ -257,13 +251,7 @@ function parseChartXml(xml: string): {
     }
   }
 
-  const result: {
-    type: ChartType;
-    title?: string;
-    axes?: { x?: string; y?: string };
-    series?: string[];
-    dataRanges?: string[];
-  } = { type: chartType };
+  const result: ParsedChart = { type: chartType };
   if (title !== undefined) result.title = title;
   if (axes.x !== undefined || axes.y !== undefined) result.axes = axes;
   if (series.length > 0) result.series = series;
@@ -285,9 +273,7 @@ function anchorRangeFromDrawing(scope: string): string | undefined {
 }
 
 function nameFromAnchor(scope: string): string {
-  return (
-    /<xdr:cNvPr\s+[^>]*?\bname="([^"]*)"/.exec(scope)?.[1] ?? ""
-  );
+  return /<xdr:cNvPr\s+[^>]*?\bname="([^"]*)"/.exec(scope)?.[1] ?? "";
 }
 
 function fileText(
@@ -344,17 +330,13 @@ function extractCharts(
     const anchorRange = anchorRangeFromDrawing(anchor);
     if (anchorRange === undefined) continue;
 
-    const parsed = parseChartXml(chartXml);
-    const desc: ChartDescriptor = {
+    // parseChartXml omits any optional field with no value, so the spread
+    // never leaks `undefined` keys into the descriptor.
+    charts.push({
+      ...parseChartXml(chartXml),
       name: nameFromAnchor(anchor),
-      type: parsed.type,
       anchorRange,
-    };
-    if (parsed.title !== undefined) desc.title = parsed.title;
-    if (parsed.dataRanges !== undefined) desc.dataRanges = parsed.dataRanges;
-    if (parsed.series !== undefined) desc.series = parsed.series;
-    if (parsed.axes !== undefined) desc.axes = parsed.axes;
-    charts.push(desc);
+    });
   }
   return charts;
 }
@@ -410,34 +392,32 @@ export function readSheet(
 
   // Empty worksheet — emit an empty grid anchored at A1. cellMeta is omitted
   // (there are no cells to describe).
+  let grid: Grid;
   if (typeof ref !== "string" || ref.length === 0) {
-    const grid: Grid = { rows: [], origin: { row: 1, col: 1 } };
-    const charts = extractCharts(wb, sheetIndex);
-    if (charts.length > 0) grid.charts = charts;
-    return grid;
-  }
-
-  const range = xlsx.utils.decode_range(ref);
-  const rows: string[][] = [];
-  const cellMeta: CellMeta[][] = [];
-  for (let r = range.s.r; r <= range.e.r; r++) {
-    const rowVals: string[] = [];
-    const rowMeta: CellMeta[] = [];
-    for (let c = range.s.c; c <= range.e.c; c++) {
-      const addr = xlsx.utils.encode_cell({ r, c });
-      const cell = ws[addr] as XlsxCell | undefined;
-      rowVals.push(cellText(cell));
-      rowMeta.push({ dataType: inferDataType(cell) });
+    grid = { rows: [], origin: { row: 1, col: 1 } };
+  } else {
+    const range = xlsx.utils.decode_range(ref);
+    const rows: string[][] = [];
+    const cellMeta: CellMeta[][] = [];
+    for (let r = range.s.r; r <= range.e.r; r++) {
+      const rowVals: string[] = [];
+      const rowMeta: CellMeta[] = [];
+      for (let c = range.s.c; c <= range.e.c; c++) {
+        const addr = xlsx.utils.encode_cell({ r, c });
+        const cell = ws[addr] as XlsxCell | undefined;
+        rowVals.push(cellText(cell));
+        rowMeta.push({ dataType: inferDataType(cell) });
+      }
+      rows.push(rowVals);
+      cellMeta.push(rowMeta);
     }
-    rows.push(rowVals);
-    cellMeta.push(rowMeta);
+    grid = {
+      rows,
+      origin: { row: range.s.r + 1, col: range.s.c + 1 },
+      cellMeta,
+    };
   }
 
-  const grid: Grid = {
-    rows,
-    origin: { row: range.s.r + 1, col: range.s.c + 1 },
-    cellMeta,
-  };
   const charts = extractCharts(wb, sheetIndex);
   if (charts.length > 0) grid.charts = charts;
   return grid;
