@@ -31,6 +31,12 @@ bin/
 obj/
 *.tsbuildinfo
 
+# Python build / cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
 # Transient copy made by `npm pack` prepack (see packages/typescript/package.json)
 /packages/typescript/prompts/
 
