@@ -1,0 +1,35 @@
+# Local reference implementations — contain a previously-leaked API key; NEVER commit
+sources/
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Claude Code / sandcastle tooling (not part of the product)
+.claude/
+.agents/
+.sandcastle/
+
+# Root-level tooling manifests (product packages carry their own under packages/)
+/package.json
+/package-lock.json
+/skills-lock.json
+
+# Environment / secrets
+.env
+*.env
+!**/.env.example
+.env.local
+
+# Build output
+dist/
+build/
+bin/
+obj/
+*.tsbuildinfo
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
