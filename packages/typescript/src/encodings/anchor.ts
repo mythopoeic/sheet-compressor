@@ -16,54 +16,26 @@ function escapeValue(v: string): string {
     .replace(/\t/g, "\\t");
 }
 
-type Cell = { address: string; value: string };
+export function encodeAnchor(grid: Grid): Encoding<AnchorJson> {
+  const cells: AnchorJson["cells"] = [];
+  const lines: string[] = [];
 
-function extractCells(grid: Grid): Cell[] {
-  const out: Cell[] = [];
   for (let r = 0; r < grid.rows.length; r++) {
     const row = grid.rows[r] ?? [];
+    const tokens: string[] = [];
     for (let c = 0; c < row.length; c++) {
       const value = row[c] ?? "";
       // SPEC §3.1: only literal "" is empty.
       if (value === "") continue;
-      out.push({
-        address: a1(grid.origin.row + r, grid.origin.col + c),
-        value,
-      });
+      const address = a1(grid.origin.row + r, grid.origin.col + c);
+      cells.push({ address, value });
+      tokens.push(`${address},${escapeValue(value)}`);
     }
+    // SPEC §3.2: fully-empty rows are dropped (no blank line emitted).
+    if (tokens.length > 0) lines.push(tokens.join("|"));
   }
-  return out;
-}
 
-function renderString(cells: Cell[]): string {
-  // Group consecutive cells by their row component so `|`-joined runs match
-  // the source grid row layout. SPEC §3.2: fully-empty rows are dropped, no
-  // trailing newline, row-major order.
-  const lines: string[] = [];
-  let currentRowKey: string | null = null;
-  let currentTokens: string[] = [];
-
-  const flush = () => {
-    if (currentTokens.length > 0) lines.push(currentTokens.join("|"));
-    currentTokens = [];
-  };
-
-  for (const cell of cells) {
-    // The row portion of the address is the trailing digits.
-    const rowKey = cell.address.replace(/^[A-Z]+/, "");
-    if (rowKey !== currentRowKey) {
-      flush();
-      currentRowKey = rowKey;
-    }
-    currentTokens.push(`${cell.address},${escapeValue(cell.value)}`);
-  }
-  flush();
-  return lines.join("\n");
-}
-
-export function encodeAnchor(grid: Grid): Encoding<AnchorJson> {
-  const cells = extractCells(grid);
-  const string = renderString(cells);
+  const string = lines.join("\n");
   const json: AnchorJson = {
     encoding: "anchor-skeleton",
     version: 0,
