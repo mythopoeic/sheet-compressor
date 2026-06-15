@@ -1,0 +1,230 @@
+{
+  "encoding": "anchor-skeleton",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "cells": [
+    {
+      "address": "A1",
+      "value": "Year"
+    },
+    {
+      "address": "B1",
+      "value": "Revenue"
+    },
+    {
+      "address": "C1",
+      "value": "Pi"
+    },
+    {
+      "address": "D1",
+      "value": "Energy"
+    },
+    {
+      "address": "E1",
+      "value": "Tax"
+    },
+    {
+      "address": "F1",
+      "value": "Price"
+    },
+    {
+      "address": "G1",
+      "value": "Issued"
+    },
+    {
+      "address": "H1",
+      "value": "Open"
+    },
+    {
+      "address": "I1",
+      "value": "Active"
+    },
+    {
+      "address": "J1",
+      "value": "Contact"
+    },
+    {
+      "address": "K1",
+      "value": "Item"
+    },
+    {
+      "address": "A2",
+      "value": "2021"
+    },
+    {
+      "address": "B2",
+      "value": "100"
+    },
+    {
+      "address": "C2",
+      "value": "3.14"
+    },
+    {
+      "address": "D2",
+      "value": "1.5e10"
+    },
+    {
+      "address": "E2",
+      "value": "50%"
+    },
+    {
+      "address": "F2",
+      "value": "$99"
+    },
+    {
+      "address": "G2",
+      "value": "2024-01-15"
+    },
+    {
+      "address": "H2",
+      "value": "09:30"
+    },
+    {
+      "address": "I2",
+      "value": "TRUE"
+    },
+    {
+      "address": "J2",
+      "value": "a@b.co"
+    },
+    {
+      "address": "K2",
+      "value": "Apple"
+    },
+    {
+      "address": "A3",
+      "value": "2022"
+    },
+    {
+      "address": "B3",
+      "value": "200"
+    },
+    {
+      "address": "C3",
+      "value": "2.71"
+    },
+    {
+      "address": "D3",
+      "value": "-2.0E-3"
+    },
+    {
+      "address": "E3",
+      "value": "-12.5%"
+    },
+    {
+      "address": "F3",
+      "value": "€42"
+    },
+    {
+      "address": "G3",
+      "value": "2024-02-20"
+    },
+    {
+      "address": "H3",
+      "value": "12:30 PM"
+    },
+    {
+      "address": "I3",
+      "value": "False"
+    },
+    {
+      "address": "J3",
+      "value": "c@d.io"
+    },
+    {
+      "address": "K3",
+      "value": "Pear"
+    },
+    {
+      "address": "A4",
+      "value": "2023"
+    },
+    {
+      "address": "B4",
+      "value": "300"
+    },
+    {
+      "address": "C4",
+      "value": "1.41"
+    },
+    {
+      "address": "D4",
+      "value": "6.022E23"
+    },
+    {
+      "address": "E4",
+      "value": "8.25%"
+    },
+    {
+      "address": "F4",
+      "value": "£10.00"
+    },
+    {
+      "address": "G4",
+      "value": "2024-03-10"
+    },
+    {
+      "address": "H4",
+      "value": "14:45:30"
+    },
+    {
+      "address": "I4",
+      "value": "True"
+    },
+    {
+      "address": "J4",
+      "value": "e@f.co"
+    },
+    {
+      "address": "K4",
+      "value": "Plum"
+    },
+    {
+      "address": "A5",
+      "value": "2024"
+    },
+    {
+      "address": "B5",
+      "value": "400"
+    },
+    {
+      "address": "C5",
+      "value": "0.5"
+    },
+    {
+      "address": "D5",
+      "value": "9.81e0"
+    },
+    {
+      "address": "E5",
+      "value": "100%"
+    },
+    {
+      "address": "F5",
+      "value": "¥99"
+    },
+    {
+      "address": "G5",
+      "value": "2024-04-25"
+    },
+    {
+      "address": "H5",
+      "value": "1:05am"
+    },
+    {
+      "address": "I5",
+      "value": "false"
+    },
+    {
+      "address": "J5",
+      "value": "g@h.co"
+    },
+    {
+      "address": "K5",
+      "value": "Grape"
+    }
+  ]
+}
