@@ -1,0 +1,72 @@
+{
+  "encoding": "inverted-index",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "value": "Region",
+      "ranges": [
+        "A1"
+      ]
+    },
+    {
+      "value": "Q1",
+      "ranges": [
+        "B1"
+      ]
+    },
+    {
+      "value": "Q2",
+      "ranges": [
+        "C1"
+      ]
+    },
+    {
+      "value": "Q3",
+      "ranges": [
+        "D1"
+      ]
+    },
+    {
+      "value": "Q4",
+      "ranges": [
+        "E1"
+      ]
+    },
+    {
+      "value": "North",
+      "ranges": [
+        "A2"
+      ]
+    },
+    {
+      "value": "ok",
+      "ranges": [
+        "B2:D3",
+        "E3"
+      ]
+    },
+    {
+      "value": "low",
+      "ranges": [
+        "E2",
+        "B5:E5"
+      ]
+    },
+    {
+      "value": "South",
+      "ranges": [
+        "A3"
+      ]
+    },
+    {
+      "value": "East",
+      "ranges": [
+        "A5"
+      ]
+    }
+  ]
+}

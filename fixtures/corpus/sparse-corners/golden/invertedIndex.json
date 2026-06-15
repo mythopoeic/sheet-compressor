@@ -1,0 +1,58 @@
+{
+  "encoding": "inverted-index",
+  "version": 0,
+  "origin": {
+    "row": 1,
+    "col": 1
+  },
+  "groups": [
+    {
+      "value": "A",
+      "ranges": [
+        "A1"
+      ]
+    },
+    {
+      "value": "B",
+      "ranges": [
+        "B1"
+      ]
+    },
+    {
+      "value": "C",
+      "ranges": [
+        "C1"
+      ]
+    },
+    {
+      "value": "1",
+      "ranges": [
+        "A2"
+      ]
+    },
+    {
+      "value": "2",
+      "ranges": [
+        "B2"
+      ]
+    },
+    {
+      "value": "3",
+      "ranges": [
+        "C2"
+      ]
+    },
+    {
+      "value": "Total",
+      "ranges": [
+        "G19"
+      ]
+    },
+    {
+      "value": "8",
+      "ranges": [
+        "G20"
+      ]
+    }
+  ]
+}

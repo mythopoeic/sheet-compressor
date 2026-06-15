@@ -77,6 +77,13 @@ export type AnchorJson = {
   cells: Array<{ address: string; value: string }>;
 };
 
+export type InvertedIndexJson = {
+  encoding: "inverted-index";
+  version: 0;
+  origin: Origin;
+  groups: Array<{ value: string; ranges: string[] }>;
+};
+
 export type Encoding<TJson = unknown> = {
   string: string;
   json: TJson;
@@ -86,6 +93,7 @@ export type Encoding<TJson = unknown> = {
 export type CompressResult = {
   encodings: {
     anchor: Encoding<AnchorJson>;
+    invertedIndex: Encoding<InvertedIndexJson>;
   };
   rawBaseline: { tokenEstimate: number };
 };

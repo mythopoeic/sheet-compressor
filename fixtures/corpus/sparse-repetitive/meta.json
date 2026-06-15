@@ -1,0 +1,5 @@
+{
+  "id": "sparse-repetitive",
+  "title": "Sparse sheet with repeated values",
+  "description": "Exercises the inverted-index encoding: repeated values that collapse into A1 rectangles, a horizontal run, a vertical run, and a non-contiguous value group whose first cell address determines group ordering."
+}

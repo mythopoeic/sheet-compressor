@@ -19,5 +19,6 @@ export type {
   DataType,
   Encoding,
   Grid,
+  InvertedIndexJson,
   Origin,
 } from "./types.ts";

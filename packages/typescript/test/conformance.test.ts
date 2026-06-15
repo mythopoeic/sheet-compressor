@@ -48,6 +48,37 @@ describe("conformance corpus", () => {
         expect(String(result.encodings.anchor.tokenEstimate)).toBe(expected);
       });
 
+      it("matches the invertedIndex.string golden", () => {
+        const expected = readFileSync(
+          join(goldenDir, goldenFiles.invertedIndexString),
+          "utf8",
+        );
+        expect(result.encodings.invertedIndex.string).toBe(expected);
+      });
+
+      it("matches the invertedIndex.json golden", () => {
+        const expected = readFileSync(
+          join(goldenDir, goldenFiles.invertedIndexJson),
+          "utf8",
+        );
+        const produced = `${JSON.stringify(
+          result.encodings.invertedIndex.json,
+          null,
+          2,
+        )}\n`;
+        expect(produced).toBe(expected);
+      });
+
+      it("matches the invertedIndex.tokenEstimate golden", () => {
+        const expected = readFileSync(
+          join(goldenDir, goldenFiles.invertedIndexTokens),
+          "utf8",
+        ).trim();
+        expect(String(result.encodings.invertedIndex.tokenEstimate)).toBe(
+          expected,
+        );
+      });
+
       it("matches the rawBaseline.tokenEstimate golden", () => {
         const expected = readFileSync(
           join(goldenDir, goldenFiles.rawBaselineTokens),
