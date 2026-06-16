@@ -35,6 +35,39 @@ fmt.Println(result.RawBaseline.TokenEstimate, "→", result.Anchor.TokenEstimate
 phase-1 detector, and a `nil` `TokenCounter` selects the SPEC §7 heuristic
 (UTF-16 code units ÷ 4, ceil).
 
+## Optional .xlsx adapter
+
+A thin [excelize](https://github.com/xuri/excelize)-backed adapter lives in
+`xlsx/`, gated behind the `sheetcompressor_excelize` build tag — without the
+tag, `xlsx.ReadSheet` returns `xlsx.ErrAdapterUnavailable` so consumers can
+fall back to building the `Grid` themselves (SPEC §8.2).
+
+```go
+import (
+    "github.com/mythopoeic/sheet-compressor/packages/go/sheetcompressor"
+    "github.com/mythopoeic/sheet-compressor/packages/go/xlsx"
+)
+
+grid, err := xlsx.ReadSheetFile("workbook.xlsx", xlsx.Options{})
+if err != nil {
+    return err
+}
+result := sheetcompressor.Compress(grid, sheetcompressor.Options{})
+```
+
+To enable the real adapter:
+
+```sh
+go get github.com/xuri/excelize/v2
+go build -tags sheetcompressor_excelize ./...
+```
+
+`Options.SheetName` selects a sheet by name (wins over `SheetIndex`);
+`Options.SheetIndex` selects by 0-indexed position; both omitted picks the
+first sheet. The returned `Grid` carries the used-range origin, every cell's
+inferred `DataType`, and any embedded chart descriptors the workbook exposes
+via the OOXML drawing parts.
+
 ## Real tokenizer
 
 The core is dependency-free. An optional tiktoken-go adapter lives in
