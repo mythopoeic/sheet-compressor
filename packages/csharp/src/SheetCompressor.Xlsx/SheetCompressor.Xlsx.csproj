@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>SheetCompressor.Xlsx</RootNamespace>
+    <AssemblyName>SheetCompressor.Xlsx</AssemblyName>
+    <PackageId>SheetCompressor.Xlsx</PackageId>
+    <Description>SheetCompressor optional .xlsx adapter (Seam 2): reads a single sheet — grid, origin, per-cell data type, embedded chart descriptors — into the SheetCompressor.Grid shape.</Description>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SheetCompressor\SheetCompressor.csproj" />
+  </ItemGroup>
+</Project>
