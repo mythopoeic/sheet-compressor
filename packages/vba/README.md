@@ -9,6 +9,12 @@ TypeScript reference in `packages/typescript/` and the shared golden corpus in
 No LLM calls, no provider SDKs — just the compression core and the file/host
 adapters around it.
 
+> **Developing this port?** Read
+> [`docs/agents/host-port-constraints.md`](../../docs/agents/host-port-constraints.md)
+> first — the VBE compiler enforces rules (no public arrays on classes,
+> case-insensitive identifiers, declaration order) that no headless check sees.
+> It includes pre-flight scanners and the re-import trap.
+
 ## What's here
 
 The package is shipped as importable `.bas`/`.cls` source files (no SQL, ribbon,

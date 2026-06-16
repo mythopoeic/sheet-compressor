@@ -17,3 +17,7 @@ Default vocabulary — role name equals label string (`needs-triage`, `needs-inf
 ### Domain docs
 
 Single-context: `CONTEXT.md` + `docs/adr/` at the repo root (created lazily). See `docs/agents/domain.md`.
+
+### Host-port constraints (Office Script & VBA)
+
+The Office Script and VBA ports target host compilers stricter than our local checks; fixes belong at the right layer (TS source for the generated `.osts`). Read `docs/agents/host-port-constraints.md` before developing either — it lists the compile-error classes, fix patterns, pre-flight scanners, and the VBE re-import trap.

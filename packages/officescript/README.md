@@ -3,6 +3,11 @@
 Office Script (Excel Automate) implementation of the
 [SheetCompressor](../../spec/SPEC.md) encoding.
 
+> **Developing this port?** Read
+> [`docs/agents/host-port-constraints.md`](../../docs/agents/host-port-constraints.md)
+> first — the Office Scripts compiler is stricter than our local `tsc`, and fixes
+> belong in the TS source (never the generated `.osts`).
+
 Office Script **is** TypeScript, so this port does **not** re-implement the
 algorithm. A checked-in generator bundles the verified TypeScript reference core
 (`packages/typescript/src/`, covered by the 288-test suite) into a single
