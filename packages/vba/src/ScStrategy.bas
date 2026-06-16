@@ -47,68 +47,68 @@ End Sub
 ' SPEC sec.3.1.2 phase1. Mirrors TS phase1Strategy.detect() step-for-step.
 Public Sub DetectPhase1(ByVal g As Grid, _
                         ByRef keptRows() As Boolean, ByRef keptCols() As Boolean)
-    Dim R As Long, C As Long
-    R = g.RowCount
-    C = g.ColCount
+    Dim nR As Long, nC As Long
+    nR = g.RowCount
+    nC = g.ColCount
 
-    AllocFalse keptRows, R
-    AllocFalse keptCols, C
-    If R = 0 Or C = 0 Then Exit Sub      ' empty grid -> empty detection
+    AllocFalse keptRows, nR
+    AllocFalse keptCols, nC
+    If nR = 0 Or nC = 0 Then Exit Sub      ' empty grid -> empty detection
 
     ' --- anchorRows / anchorCols as Boolean arrays --------------------
     Dim anchorRows() As Boolean, anchorCols() As Boolean
-    AllocFalse anchorRows, R
-    AllocFalse anchorCols, C
+    AllocFalse anchorRows, nR
+    AllocFalse anchorCols, nC
 
     Dim r As Long, c As Long
 
     ' 1a. Heterogeneity anchors, row-wise: H(r) = unique/nonEmpty >= 0.5
-    For r = 0 To R - 1
+    For r = 0 To nR - 1
         Dim rowVals() As String
-        ReDim rowVals(0 To C - 1)
-        For c = 0 To C - 1
+        ReDim rowVals(0 To nC - 1)
+        For c = 0 To nC - 1
             rowVals(c) = g.CellAt(r, c)
         Next c
         If Heterogeneity(rowVals) >= PHASE1_HET_THRESHOLD Then anchorRows(r) = True
     Next r
 
     ' 1b. Type-transition anchors, row-wise: adjacent rows differ in any column.
-    For r = 1 To R - 1
-        If RowTypesDiffer(g, r - 1, r, C) Then
+    For r = 1 To nR - 1
+        If RowTypesDiffer(g, r - 1, r, nC) Then
             anchorRows(r - 1) = True
             anchorRows(r) = True
         End If
     Next r
 
     ' Heterogeneity anchors, column-wise.
-    For c = 0 To C - 1
+    For c = 0 To nC - 1
         Dim colVals() As String
-        ReDim colVals(0 To R - 1)
-        For r = 0 To R - 1
+        ReDim colVals(0 To nR - 1)
+        For r = 0 To nR - 1
             colVals(r) = g.CellAt(r, c)
         Next r
         If Heterogeneity(colVals) >= PHASE1_HET_THRESHOLD Then anchorCols(c) = True
     Next c
 
     ' Type-transition anchors, column-wise.
-    For c = 1 To C - 1
-        If ColTypesDiffer(g, c - 1, c, R) Then
+    For c = 1 To nC - 1
+        If ColTypesDiffer(g, c - 1, c, nR) Then
             anchorCols(c - 1) = True
             anchorCols(c) = True
         End If
     Next c
 
     ' 3. K-neighborhood expansion -> keptRows / keptCols.
-    ExpandNeighborhood anchorRows, R, PHASE1_K, keptRows
-    ExpandNeighborhood anchorCols, C, PHASE1_K, keptCols
+    ExpandNeighborhood anchorRows, nR, PHASE1_K, keptRows
+    ExpandNeighborhood anchorCols, nC, PHASE1_K, keptCols
 
     ' 4. Prune entirely-blank rows/cols within the kept region. Rows first,
     '    THEN columns (single pass; columns see the already-updated keptRows).
-    For r = 0 To R - 1
+    For r = 0 To nR - 1
         If keptRows(r) Then
             Dim hasContent As Boolean
             hasContent = False
-            For c = 0 To C - 1
+            For c = 0 To nC - 1
                 If keptCols(c) Then
                     If g.CellAt(r, c) <> "" Then
                         hasContent = True
@@ -120,11 +120,11 @@ Public Sub DetectPhase1(ByVal g As Grid, _
         End If
     Next r
 
-    For c = 0 To C - 1
+    For c = 0 To nC - 1
         If keptCols(c) Then
             Dim hasContent2 As Boolean
             hasContent2 = False
-            For r = 0 To R - 1
+            For r = 0 To nR - 1
                 If keptRows(r) Then
                     If g.CellAt(r, c) <> "" Then
                         hasContent2 = True
@@ -265,9 +265,9 @@ End Function
 
 ' Any column where row rA and rB differ in (declared/inferred) type?
 Private Function RowTypesDiffer(ByVal g As Grid, ByVal rA As Long, ByVal rB As Long, _
-                                ByVal C As Long) As Boolean
+                                ByVal nCols As Long) As Boolean
     Dim c As Long
-    For c = 0 To C - 1
+    For c = 0 To nCols - 1
         If TypeAt(g, rA, c) <> TypeAt(g, rB, c) Then
             RowTypesDiffer = True
             Exit Function
@@ -276,9 +276,9 @@ Private Function RowTypesDiffer(ByVal g As Grid, ByVal rA As Long, ByVal rB As L
 End Function
 
 Private Function ColTypesDiffer(ByVal g As Grid, ByVal cA As Long, ByVal cB As Long, _
-                                ByVal R As Long) As Boolean
+                                ByVal nRows As Long) As Boolean
     Dim r As Long
-    For r = 0 To R - 1
+    For r = 0 To nRows - 1
         If TypeAt(g, r, cA) <> TypeAt(g, r, cB) Then
             ColTypesDiffer = True
             Exit Function
