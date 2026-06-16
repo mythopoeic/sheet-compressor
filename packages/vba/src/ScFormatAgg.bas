@@ -16,13 +16,6 @@ Attribute VB_Name = "ScFormatAgg"
 ' =====================================================================
 Option Explicit
 
-' Canonical emission order (SPEC sec.5.1 / TS TYPE_ORDER).
-Private Function TypeOrder() As Variant
-    TypeOrder = Array("IntNum", "FloatNum", "ScientificNum", "PercentageNum", _
-                      "CurrencyData", "DateData", "TimeData", "YearData", _
-                      "EmailData", "Boolean", "Text")
-End Function
-
 ' Cached compiled regexes (one VBScript.RegExp per pattern).
 Private mInit As Boolean
 Private reBoolean As Object
@@ -39,6 +32,13 @@ Private reYear As Object
 Private reFloat As Object
 Private reInt As Object
 Private reYearHeader As Object
+
+' Canonical emission order (SPEC sec.5.1 / TS TYPE_ORDER).
+Private Function TypeOrder() As Variant
+    TypeOrder = Array("IntNum", "FloatNum", "ScientificNum", "PercentageNum", _
+                      "CurrencyData", "DateData", "TimeData", "YearData", _
+                      "EmailData", "Boolean", "Text")
+End Function
 
 Private Function MakeRe(ByVal pattern As String, ByVal ignoreCase As Boolean) As Object
     Dim re As Object
