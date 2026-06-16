@@ -42,7 +42,7 @@ export function encodeInvertedIndex(
   }
 
   const groups: InvertedIndexJson["groups"] = [];
-  for (const [value, cellKeys] of cellsByValue) {
+  for (const [value, cellKeys] of Array.from(cellsByValue)) {
     const present = new Set(cellKeys);
     const assigned = new Set<number>();
     const ranges: string[] = [];

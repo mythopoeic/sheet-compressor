@@ -79,9 +79,9 @@ export const phase1Strategy: AnchorStrategy = {
     const keptCols = expandNeighborhood(anchorCols, colCount, PHASE1_K);
 
     // Prune entirely-blank rows/cols within the kept region.
-    for (const r of [...keptRows]) {
+    for (const r of Array.from(keptRows)) {
       let hasContent = false;
-      for (const c of keptCols) {
+      for (const c of Array.from(keptCols)) {
         if (cell(r, c) !== "") {
           hasContent = true;
           break;
@@ -89,9 +89,9 @@ export const phase1Strategy: AnchorStrategy = {
       }
       if (!hasContent) keptRows.delete(r);
     }
-    for (const c of [...keptCols]) {
+    for (const c of Array.from(keptCols)) {
       let hasContent = false;
-      for (const r of keptRows) {
+      for (const r of Array.from(keptRows)) {
         if (cell(r, c) !== "") {
           hasContent = true;
           break;
@@ -168,7 +168,7 @@ function expandNeighborhood(
   k: number,
 ): Set<number> {
   const kept = new Set<number>();
-  for (const a of anchors) {
+  for (const a of Array.from(anchors)) {
     const lo = Math.max(0, a - k);
     const hi = Math.min(size - 1, a + k);
     for (let i = lo; i <= hi; i++) kept.add(i);

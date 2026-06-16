@@ -252,7 +252,7 @@ namespace SheetCompressorInternal {
       parts.push(`data=${chart.dataRanges.join(",")}`);
     }
     if (chart.series && chart.series.length > 0) {
-      parts.push(`series=[${chart.series.map(escapeSeriesName).join(",")}]`);
+      parts.push(`series=[${chart.series.map((s) => escapeSeriesName(s)).join(",")}]`);
     }
     if (chart.axes?.x !== undefined) {
       parts.push(`xAxis="${escapeQuoted(chart.axes.x)}"`);
@@ -271,7 +271,7 @@ namespace SheetCompressorInternal {
     charts: ChartDescriptor[] | undefined,
   ): string {
     if (!charts || charts.length === 0) return "";
-    return charts.map(renderChartToken).join("\n");
+    return charts.map((c) => renderChartToken(c)).join("\n");
   }
 
   /**
@@ -357,7 +357,7 @@ namespace SheetCompressorInternal {
     }
 
     const groups: InvertedIndexJson["groups"] = [];
-    for (const [value, cellKeys] of cellsByValue) {
+    for (const [value, cellKeys] of Array.from(cellsByValue)) {
       const present = new Set(cellKeys);
       const assigned = new Set<number>();
       const ranges: string[] = [];
@@ -758,9 +758,9 @@ namespace SheetCompressorInternal {
       const keptCols = expandNeighborhood(anchorCols, colCount, PHASE1_K);
 
       // Prune entirely-blank rows/cols within the kept region.
-      for (const r of [...keptRows]) {
+      for (const r of Array.from(keptRows)) {
         let hasContent = false;
-        for (const c of keptCols) {
+        for (const c of Array.from(keptCols)) {
           if (cell(r, c) !== "") {
             hasContent = true;
             break;
@@ -768,9 +768,9 @@ namespace SheetCompressorInternal {
         }
         if (!hasContent) keptRows.delete(r);
       }
-      for (const c of [...keptCols]) {
+      for (const c of Array.from(keptCols)) {
         let hasContent = false;
-        for (const r of keptRows) {
+        for (const r of Array.from(keptRows)) {
           if (cell(r, c) !== "") {
             hasContent = true;
             break;
@@ -847,7 +847,7 @@ namespace SheetCompressorInternal {
     k: number,
   ): Set<number> {
     const kept = new Set<number>();
-    for (const a of anchors) {
+    for (const a of Array.from(anchors)) {
       const lo = Math.max(0, a - k);
       const hi = Math.min(size - 1, a + k);
       for (let i = lo; i <= hi; i++) kept.add(i);

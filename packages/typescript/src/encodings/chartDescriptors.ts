@@ -43,7 +43,7 @@ export function renderChartToken(chart: ChartDescriptor): string {
     parts.push(`data=${chart.dataRanges.join(",")}`);
   }
   if (chart.series && chart.series.length > 0) {
-    parts.push(`series=[${chart.series.map(escapeSeriesName).join(",")}]`);
+    parts.push(`series=[${chart.series.map((s) => escapeSeriesName(s)).join(",")}]`);
   }
   if (chart.axes?.x !== undefined) {
     parts.push(`xAxis="${escapeQuoted(chart.axes.x)}"`);
@@ -62,7 +62,7 @@ export function renderChartBlock(
   charts: ChartDescriptor[] | undefined,
 ): string {
   if (!charts || charts.length === 0) return "";
-  return charts.map(renderChartToken).join("\n");
+  return charts.map((c) => renderChartToken(c)).join("\n");
 }
 
 /**
