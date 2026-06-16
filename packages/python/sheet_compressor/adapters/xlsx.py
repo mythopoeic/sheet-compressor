@@ -60,45 +60,40 @@ def _cell_text(value: Any) -> str:
         # bool is a subclass of int — branch first so True/False don't get
         # stringified as "1"/"0".
         return "TRUE" if value else "FALSE"
-    if isinstance(value, datetime):
+    if isinstance(value, (datetime, date, time)):
         return value.isoformat()
-    if isinstance(value, date):
-        return value.isoformat()
-    if isinstance(value, time):
-        return value.isoformat()
-    if isinstance(value, float):
+    if isinstance(value, float) and value.is_integer():
         # Keep integer-valued floats compact: 3.0 → "3", matching the TS /
         # Go adapters (and SheetJS's default `w`).
-        if value.is_integer():
-            return str(int(value))
-        return str(value)
+        return str(int(value))
     return str(value)
+
+
+# openpyxl uses single-letter codes: ``s`` (text), ``n`` (number), ``b`` (bool),
+# ``d`` (date), ``f`` (formula), ``e`` (error), plus ``inlineStr`` / ``str``
+# (both text). Mirror of TS's ``T_TO_DATA_TYPE``.
+_DATA_TYPE_MAP = {
+    "s": "text",
+    "str": "text",
+    "inlineStr": "text",
+    "n": "number",
+    "b": "bool",
+    "d": "date",
+    "e": "error",
+}
 
 
 def _data_type(cell) -> str:
     """Map an openpyxl ``cell.data_type`` to the SPEC §1 vocabulary.
 
-    openpyxl uses single-letter codes: ``s`` (text), ``n`` (number),
-    ``b`` (bool), ``d`` (date), ``f`` (formula), ``e`` (error),
-    ``inlineStr`` / ``str`` (text). A ``cell.data_type == "n"`` with
-    ``cell.value is None`` is a gap — surface as ``empty``.
+    A ``cell.data_type == "n"`` with ``cell.value is None`` is a gap — surface
+    as ``empty``. Formula wins over the evaluated type.
     """
-    t = cell.data_type
-    if t == "f":
+    if cell.data_type == "f":
         return "formula"
     if cell.value is None:
         return "empty"
-    if t in ("s", "str", "inlineStr"):
-        return "text"
-    if t == "n":
-        return "number"
-    if t == "b":
-        return "bool"
-    if t == "d":
-        return "date"
-    if t == "e":
-        return "error"
-    return "text"
+    return _DATA_TYPE_MAP.get(cell.data_type, "text")
 
 
 # ---------------------------------------------------------------------------
@@ -125,13 +120,8 @@ def _normalize_range(ref: Optional[str]) -> Optional[str]:
     """Strip sheet qualifier and absolute markers: ``'Sheet1'!$B$2:$B$4`` → ``B2:B4``."""
     if not ref:
         return None
-    s = ref
-    bang = s.rfind("!")
-    if bang >= 0:
-        s = s[bang + 1 :]
-    s = s.replace("$", "")
-    s = s.strip("'")
-    return s
+    tail = ref.rsplit("!", 1)[-1]
+    return tail.replace("$", "").strip("'")
 
 
 def _rich_text(title_or_axis) -> Optional[str]:
@@ -171,21 +161,17 @@ def _anchor_range(anchor) -> Optional[str]:
     only has ``_from`` + an ``ext`` extent — collapse to a single-cell range,
     which still satisfies SPEC §1 ("A1 range") and tells the LLM where the
     chart sits. ``AbsoluteAnchor`` (pixel-positioned) has no cell anchor at
-    all — return ``None`` to skip the descriptor's ``anchorRange``.
+    all — return ``None``; the caller skips charts without a usable anchor.
     """
     if anchor is None:
         return None
     frm = getattr(anchor, "_from", None)
     if frm is None:
         return None
-    fr = int(frm.row) + 1
-    fc = int(frm.col) + 1
+    start = a1(int(frm.row) + 1, int(frm.col) + 1)
     to = getattr(anchor, "to", None)
-    if to is not None:
-        tr = int(to.row) + 1
-        tc = int(to.col) + 1
-        return f"{a1(fr, fc)}:{a1(tr, tc)}"
-    return f"{a1(fr, fc)}:{a1(fr, fc)}"
+    end = a1(int(to.row) + 1, int(to.col) + 1) if to is not None else start
+    return f"{start}:{end}"
 
 
 def _series_name(series) -> Optional[str]:
@@ -220,11 +206,6 @@ def _series_data_range(series) -> Optional[str]:
     return None
 
 
-def _chart_type(chart) -> str:
-    name = type(chart).__name__
-    return _CHART_CLASS_TO_TYPE.get(name, "other")
-
-
 def _extract_charts(ws) -> List[dict]:
     # openpyxl doesn't surface the drawing's cNvPr name on its chart objects,
     # so descriptor.name is left empty here. SPEC §1 treats `name` as
@@ -236,7 +217,7 @@ def _extract_charts(ws) -> List[dict]:
             continue
         descriptor: dict = {
             "name": "",
-            "type": _chart_type(chart),
+            "type": _CHART_CLASS_TO_TYPE.get(type(chart).__name__, "other"),
             "anchorRange": anchor_range,
         }
         title = _rich_text(getattr(chart, "title", None))
@@ -256,9 +237,9 @@ def _extract_charts(ws) -> List[dict]:
         series: List[str] = []
         data: List[str] = []
         for ser in getattr(chart, "series", None) or []:
-            name = _series_name(ser)
-            if name is not None:
-                series.append(name)
+            series_name = _series_name(ser)
+            if series_name is not None:
+                series.append(series_name)
             rng = _series_data_range(ser)
             if rng is not None:
                 data.append(rng)
@@ -283,7 +264,7 @@ def _open_workbook(openpyxl_mod, input_: ReadSheetInput):
     file-like is passed through.
     """
     if isinstance(input_, (bytes, bytearray)):
-        return openpyxl_mod.load_workbook(io.BytesIO(bytes(input_)), data_only=False)
+        return openpyxl_mod.load_workbook(io.BytesIO(input_), data_only=False)
     if isinstance(input_, (str, os.PathLike)):
         return openpyxl_mod.load_workbook(os.fspath(input_), data_only=False)
     return openpyxl_mod.load_workbook(input_, data_only=False)
@@ -355,15 +336,10 @@ def _build_grid(ws) -> dict:
 
     # Detect a truly empty sheet — openpyxl still reports min_row=max_row=1
     # for a fresh workbook with no cells.
-    if (
-        min_row == 1
-        and max_row == 1
-        and min_col == 1
-        and max_col == 1
-        and ws.cell(row=1, column=1).value is None
-        and ws.cell(row=1, column=1).data_type == "n"
-    ):
-        return {"rows": [], "origin": {"row": 1, "col": 1}}
+    if min_row == max_row == 1 and min_col == max_col == 1:
+        cell = ws.cell(row=1, column=1)
+        if cell.value is None and cell.data_type == "n":
+            return {"rows": [], "origin": {"row": 1, "col": 1}}
 
     rows: List[List[str]] = []
     cell_meta: List[List[dict]] = []
