@@ -1,0 +1,23 @@
+{
+  "comment": "Typechecking is driven by scripts/typecheck.ts, which copies the generated *.osts artifacts into a temp .build/ dir as .ts files (with the gen scripts) and runs tsc over THIS config. The ExcelScript host surface is provided by the `declare namespace ExcelScript` block embedded in the shippable/conformance scripts, so NO node libs are needed for the bundle itself. `scripts/` keeps `node` types because the generator is a real tsx tool.",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": ["scripts", "test"]
+}

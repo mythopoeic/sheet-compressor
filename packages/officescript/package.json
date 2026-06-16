@@ -1,0 +1,19 @@
+{
+  "name": "@sheet-compressor/officescript",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Office Script (Excel Automate) port of the SheetCompressor encoding: the verified TS reference core bundled into a single .osts via a checked-in generator, plus host glue and an in-host conformance harness.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "generate": "tsx scripts/generate-bundle.ts",
+    "typecheck": "tsx scripts/typecheck.ts",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}
