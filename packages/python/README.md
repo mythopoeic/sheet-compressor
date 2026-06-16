@@ -36,6 +36,26 @@ result = compress(grid, {"tokenCounter": create_token_counter()})
 `encoding="cl100k_base"` for the GPT-3.5 / GPT-4 family. It raises a clear error
 if `tiktoken` is not installed.
 
+## Optional .xlsx adapter
+
+Install with `pip install sheet-compressor[xlsx]` and read a workbook into a
+Grid via openpyxl:
+
+```python
+from sheet_compressor import compress
+from sheet_compressor.adapters.xlsx import read_sheet
+
+grid = read_sheet("workbook.xlsx")            # first sheet
+grid = read_sheet("workbook.xlsx", {"sheet": "Q3"})  # by name
+grid = read_sheet("workbook.xlsx", {"sheet": 1})     # by 0-indexed position
+result = compress(grid)
+```
+
+`read_sheet` accepts a file path, raw bytes, or any binary file-like object.
+It raises a clear `ImportError` if openpyxl is not installed. The pure core
+keeps working without it — build the `Grid` yourself and pass it to
+`compress()` directly.
+
 ## Conformance
 
 ```

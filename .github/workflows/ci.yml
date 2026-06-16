@@ -37,6 +37,12 @@ jobs:
       # The pure core has zero required deps; the conformance suite runs on
       # stdlib `unittest` alone, so no `pip install` step is needed.
       - run: python -m unittest discover -s tests -v
+      # Optional openpyxl adapter (SPEC §8). Installed only here so consumers
+      # who never call read_sheet() don't pay the dep cost. The adapter tests
+      # auto-skip when openpyxl is absent, so the discovery run above stays
+      # core-only.
+      - run: pip install openpyxl
+      - run: python -m unittest tests.test_xlsx_adapter -v
 
   csharp:
     name: C# conformance
