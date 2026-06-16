@@ -575,7 +575,10 @@ Private Function json_ParseString(json_String As String, ByRef json_Index As Lon
                 json_BufferAppend json_Buffer, vbFormFeed, json_BufferPosition, json_BufferLength
                 json_Index = json_Index + 1
             Case "n"
-                json_BufferAppend json_Buffer, vbCrLf, json_BufferPosition, json_BufferLength
+                ' SPEC: JSON \n decodes to a single LF (U+000A). Upstream VBA-JSON
+                ' uses vbCrLf here (a Windows-display quirk); that injects a stray
+                ' CR and breaks byte-for-byte conformance (e.g. the `escapes` fixture).
+                json_BufferAppend json_Buffer, vbLf, json_BufferPosition, json_BufferLength
                 json_Index = json_Index + 1
             Case "r"
                 json_BufferAppend json_Buffer, vbCr, json_BufferPosition, json_BufferLength

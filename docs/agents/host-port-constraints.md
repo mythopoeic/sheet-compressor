@@ -121,6 +121,26 @@ static scanners (below) before handing off.
    `VBScript.RegExp`, `ADODB.Stream`, `MSXML2.DOMDocument`) are late-bound via
    `CreateObject`, so don't add `Tools → References`.
 
+### Semantic gotchas (compile clean, wrong output — caught by conformance, not the compiler)
+
+These don't fail compilation; they silently produce non-conformant output, so
+only the byte-for-byte conformance run catches them.
+
+- **`Collection` keys are case-INSENSITIVE.** Grouping by an exact string value
+  via a keyed `Collection` wrongly merges values differing only in case (e.g.
+  `"TRUE"`/`"True"`, surfaced by the `format-coverage` fixture). For exact-value
+  grouping use a **`Scripting.Dictionary` with `.CompareMode = vbBinaryCompare`**
+  (the default), whose keys are case-sensitive. (`Dictionary.Add` is
+  `(Key, Item)` — the opposite order of `Collection.Add (Item, Key)`.)
+- **The vendored `JsonConverter` decodes `\n` to `vbCrLf`, not `vbLf`.** Tim
+  Hall's VBA-JSON injects a stray CR on the `\n` escape (a Windows-display
+  quirk), breaking byte-for-byte output for any fixture with an escaped newline
+  (the `escapes` fixture). We patch `Case "n"` to append `vbLf`. If you ever
+  re-vendor `JsonConverter.bas`, re-apply this one-line patch.
+- **`Option Compare Text`** at module scope makes every `=`/`Like`/`Select Case`
+  string comparison case-insensitive — don't add it to encoding modules (they
+  rely on the default `Option Compare Binary`).
+
 ### The VBE re-import trap (operational, bites every iteration)
 
 Importing a `.bas`/`.cls` whose module name already exists does **not**

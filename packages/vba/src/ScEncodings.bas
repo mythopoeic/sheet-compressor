@@ -84,8 +84,13 @@ Public Function EncodeInvertedIndex(ByVal g As Grid) As Encoding
     Set valueOrder = New Collection
     Dim buckets As Collection           ' parallel to valueOrder: each a Collection of Long
     Set buckets = New Collection
-    Dim bucketIndex As Collection        ' "k:"&value -> Long (1-based index into valueOrder/buckets)
-    Set bucketIndex = New Collection
+    ' "k:"&value -> Long (1-based index into valueOrder/buckets). A VBA Collection's
+    ' keys are case-INSENSITIVE, which would wrongly merge values differing only in
+    ' case (e.g. "TRUE"/"True"); a binary-compare Scripting.Dictionary keeps them
+    ' distinct (SPEC: inverted-index groups by EXACT string value).
+    Dim bucketIndex As Object
+    Set bucketIndex = CreateObject("Scripting.Dictionary")
+    bucketIndex.CompareMode = vbBinaryCompare
 
     Dim r As Long, c As Long
     For r = 0 To g.RowCount - 1
@@ -96,17 +101,17 @@ Public Function EncodeInvertedIndex(ByVal g As Grid) As Encoding
                 Dim key As String
                 key = "k:" & value
                 Dim idx As Long
-                idx = LookupIndex(bucketIndex, key)
                 Dim packed As Double
                 packed = Pack(g.OriginRow + r, g.OriginCol + c)
-                If idx = 0 Then
+                If Not bucketIndex.Exists(key) Then
                     valueOrder.Add value
                     Dim newBucket As Collection
                     Set newBucket = New Collection
                     newBucket.Add packed
                     buckets.Add newBucket
-                    bucketIndex.Add valueOrder.Count, key
+                    bucketIndex.Add key, valueOrder.Count
                 Else
+                    idx = bucketIndex.Item(key)
                     buckets.Item(idx).Add packed
                 End If
             End If
@@ -315,17 +320,6 @@ End Function
 
 Private Function InSet(ByVal coll As Collection, ByVal v As Double) As Boolean
     InSet = HasLongKey(coll, v)
-End Function
-
-' Returns 1-based index stored under key, or 0 if absent.
-Private Function LookupIndex(ByVal idxColl As Collection, ByVal key As String) As Long
-    Dim tmp As Variant
-    On Error GoTo nf
-    tmp = idxColl.Item(key)
-    LookupIndex = CLng(tmp)
-    Exit Function
-nf:
-    LookupIndex = 0
 End Function
 
 Private Function RowKept(ByRef keptRows() As Boolean, ByVal r As Long) As Boolean
