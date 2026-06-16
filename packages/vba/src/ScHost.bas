@@ -42,7 +42,7 @@ Public Function GridFromUsedRange(ByVal ws As Object) As Grid
     g.ColCount = nC
 
     If nR > 0 And nC > 0 Then
-        ReDim g.Cells(0 To nR - 1, 0 To nC - 1)
+        g.RedimCells nR, nC
 
         ' Read .Text for every cell. (Reading cell-by-cell is simplest and
         ' robust for single-cell ranges; for very large ranges a bulk .Value2
@@ -58,7 +58,7 @@ Public Function GridFromUsedRange(ByVal ws As Object) As Grid
 
         ' Populate declared dataType per cell (SPEC sec.1 / sec.8.1).
         g.HasDataTypes = True
-        ReDim g.DataTypes(0 To nR - 1, 0 To nC - 1)
+        g.RedimDataTypes nR, nC
         For r = 1 To nR
             For c = 1 To nC
                 g.DataTypes(r - 1, c - 1) = DataTypeOfCell(ur.Cells(r, c))

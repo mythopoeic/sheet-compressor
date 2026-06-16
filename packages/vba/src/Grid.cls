@@ -31,7 +31,7 @@ Attribute VB_Exposed = False
 ' =====================================================================
 Option Explicit
 
-Public Cells() As String          ' (0..RowCount-1, 0..ColCount-1), padded to ColCount with ""
+Private mCells() As String        ' (0..RowCount-1,0..ColCount-1); VBA bars Public arrays on a class, so backed privately + exposed via Property Get/Let Cells + RedimCells
 Public RowCount As Long
 Public ColCount As Long
 
@@ -45,12 +45,12 @@ Public OriginRow As Long          ' 1-indexed A1 row of Cells(0,0)
 Public OriginCol As Long          ' 1-indexed A1 col of Cells(0,0)
 
 Public HasDataTypes As Boolean
-Public DataTypes() As String      ' (0..RowCount-1, 0..ColCount-1) when HasDataTypes
+Private mDataTypes() As String    ' (0..RowCount-1,0..ColCount-1) when HasDataTypes; see Property Get/Let DataTypes + RedimDataTypes
 
 Public Charts As Collection       ' of ChartDescriptor; may be Nothing/empty
 
 Public RowLenValid As Boolean
-Public RowLen() As Long           ' original source row lengths when RowLenValid
+Private mRowLen() As Long         ' original source row lengths when RowLenValid; see Property Get/Let RowLen + RedimRowLen
 
 Private Sub Class_Initialize()
     RowCount = 0
@@ -66,7 +66,7 @@ End Sub
 ' ragged length when known, else the full ColCount.
 Public Function BaselineRowLen(ByVal r As Long) As Long
     If RowLenValid Then
-        BaselineRowLen = RowLen(r)
+        BaselineRowLen = Me.RowLen(r)
     Else
         BaselineRowLen = ColCount
     End If
@@ -78,7 +78,7 @@ Public Function CellAt(ByVal r As Long, ByVal c As Long) As String
     If r < 0 Or r >= RowCount Or c < 0 Or c >= ColCount Then
         CellAt = ""
     Else
-        CellAt = Cells(r, c)
+        CellAt = Me.Cells(r, c)
     End If
 End Function
 
@@ -89,6 +89,45 @@ Public Function DeclaredTypeAt(ByVal r As Long, ByVal c As Long) As String
     ElseIf r < 0 Or r >= RowCount Or c < 0 Or c >= ColCount Then
         DeclaredTypeAt = ""
     Else
-        DeclaredTypeAt = DataTypes(r, c)
+        DeclaredTypeAt = Me.DataTypes(r, c)
     End If
 End Function
+
+' Cells / DataTypes / RowLen are exposed as parametrised properties because VBA
+' forbids Public array members on a class module. Element read/write goes through
+' the Get/Let pairs; (re)allocation goes through the Redim* subs.
+Public Sub RedimCells(ByVal nR As Long, ByVal nC As Long)
+    ReDim mCells(0 To nR - 1, 0 To nC - 1)
+End Sub
+
+Public Property Get Cells(ByVal r As Long, ByVal c As Long) As String
+    Cells = mCells(r, c)
+End Property
+
+Public Property Let Cells(ByVal r As Long, ByVal c As Long, ByVal v As String)
+    mCells(r, c) = v
+End Property
+
+Public Sub RedimDataTypes(ByVal nR As Long, ByVal nC As Long)
+    ReDim mDataTypes(0 To nR - 1, 0 To nC - 1)
+End Sub
+
+Public Property Get DataTypes(ByVal r As Long, ByVal c As Long) As String
+    DataTypes = mDataTypes(r, c)
+End Property
+
+Public Property Let DataTypes(ByVal r As Long, ByVal c As Long, ByVal v As String)
+    mDataTypes(r, c) = v
+End Property
+
+Public Sub RedimRowLen(ByVal nR As Long)
+    ReDim mRowLen(0 To nR - 1)
+End Sub
+
+Public Property Get RowLen(ByVal r As Long) As Long
+    RowLen = mRowLen(r)
+End Property
+
+Public Property Let RowLen(ByVal r As Long, ByVal v As Long)
+    mRowLen(r) = v
+End Property

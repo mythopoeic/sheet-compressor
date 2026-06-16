@@ -61,11 +61,11 @@ Public Function GridFromDict(ByVal root As Object) As Grid
     ' Preserve original ragged row lengths for the raw baseline (SPEC sec.7).
     If nR > 0 Then
         g.RowLenValid = True
-        ReDim g.RowLen(0 To nR - 1)
+        g.RedimRowLen nR
     End If
 
     If nR > 0 And nC > 0 Then
-        ReDim g.Cells(0 To nR - 1, 0 To nC - 1)
+        g.RedimCells nR, nC
         Dim r As Long, c As Long
         For r = 0 To nR - 1
             Dim rc As Object
@@ -91,7 +91,7 @@ Public Function GridFromDict(ByVal root As Object) As Grid
         Dim metaColl As Object
         Set metaColl = root("cellMeta")
         g.HasDataTypes = True
-        ReDim g.DataTypes(0 To nR - 1, 0 To nC - 1)
+        g.RedimDataTypes nR, nC
         For r = 0 To nR - 1
             g.DataTypes(r, 0) = ""    ' ensure allocated row even if meta short
             If r < metaColl.Count Then
