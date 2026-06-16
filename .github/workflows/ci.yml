@@ -72,6 +72,25 @@ jobs:
           cache: false
       - run: go vet ./...
       - run: go test ./...
+
+  officescript:
+    name: Office Script bundle drift-guard
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/officescript
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/officescript/package-lock.json
+      - run: npm ci
+      # The .osts must stay byte-identical to the TS reference core and remain
+      # ExcelScript-pure; the drift guard regenerates and diffs.
+      - run: npm run typecheck
+      - run: npm test
       # Build-tag-gated excelize adapter (SPEC §8). Fetched here only — the
       # committed go.mod keeps the core dep-free so consumers who never call
       # the adapter never pay the excelize cost.
