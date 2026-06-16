@@ -546,6 +546,7 @@ function main(_workbook: ExcelScript.Workbook): void {
   let pass = 0;
   let fail = 0;
   let firstMismatch = "";
+  const failedIds: string[] = [];
 
   for (const fx of EMBEDDED_FIXTURES) {
     const result = ${NS}.compress(fx.input);
@@ -573,14 +574,16 @@ function main(_workbook: ExcelScript.Workbook): void {
       pass++;
     } else {
       fail++;
-      console.log("FAIL " + fx.id);
+      // Collect failures and report once after the loop — logging inside the
+      // loop trips the Office Scripts "console.log in a loop" performance lint.
+      failedIds.push(fx.id);
     }
   }
 
   console.log("=== SheetCompressor conformance ===");
   console.log("PASS " + pass + " / " + (pass + fail) + " fixtures");
   if (fail > 0) {
-    console.log("FAIL " + fail + " fixtures");
+    console.log("FAIL " + fail + " fixtures: " + failedIds.join(", "));
     console.log("First mismatch:\\n" + firstMismatch);
   } else {
     console.log("All fixtures byte-identical to goldens.");
