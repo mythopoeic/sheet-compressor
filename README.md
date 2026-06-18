@@ -74,15 +74,15 @@ can render (Office Script, desktop Excel via VBA) may additionally attach a base
 | --- | --- | --- |
 | TypeScript / Node | `sheet-compressor` (npm) | **published** · reference implementation; 288 tests |
 | Python | `sheet-compressor` (PyPI) → `import sheet_compressor` | **published** · verified vs corpus |
-| C# | `SheetCompressor` (NuGet) | verified vs corpus; NuGet publish pending |
+| C# | `SheetCompressor` (NuGet) | **published** · verified vs corpus |
 | Go | `github.com/mythopoeic/sheet-compressor/packages/go/...` | **tagged `v0.1.0`** · verified vs corpus |
 | VBA | importable `.bas` / `.cls` | implemented; verified in-host (Excel desktop) |
 | Office Script | `.osts` | implemented; verified in-host (Excel Online) |
 
 > **[`v0.1.0`](https://github.com/mythopoeic/sheet-compressor/releases/tag/v0.1.0).**
-> **TypeScript (npm), Python (PyPI), and Go are published** — install them directly (see
-> below). **C# (NuGet) is not yet published** — install it from source for now. VBA /
-> Office Script are copied from source by design. See **Getting started** below.
+> **TypeScript (npm), Python (PyPI), C# (NuGet), and Go are published** — install them
+> directly (see below). VBA / Office Script are copied from source by design. See
+> **Getting started** below.
 
 ## Getting started
 
@@ -149,10 +149,8 @@ result = compress(read_sheet("workbook.xlsx", {"sheet": "Q3"}))
 ### C# — [`packages/csharp`](./packages/csharp)
 
 ```bash
-# Pre-release: reference the projects from source (the NuGet names are not yet published).
-dotnet add reference packages/csharp/src/SheetCompressor/SheetCompressor.csproj
-dotnet add reference packages/csharp/src/SheetCompressor.Xlsx/SheetCompressor.Xlsx.csproj   # optional .xlsx reader (ClosedXML)
-# Once published these become: dotnet add package SheetCompressor [SheetCompressor.Xlsx]
+dotnet add package SheetCompressor          # core
+dotnet add package SheetCompressor.Xlsx     # optional .xlsx reader (ClosedXML)
 ```
 ```csharp
 using SheetCompressor;
