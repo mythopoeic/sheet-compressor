@@ -1,0 +1,50 @@
+name: Publish NuGet
+
+# Keyless publish via NuGet Trusted Publishing (OIDC) — no API key stored in the repo.
+# Requires a matching trusted-publisher policy on nuget.org:
+#   Package Owner:    mythopoeic
+#   Repository Owner: mythopoeic
+#   Repository:       sheet-compressor
+#   Workflow File:    publish-nuget.yml
+# Versions come from the csproj <Version> properties. Run manually (workflow_dispatch)
+# or automatically when a GitHub release is published.
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write # required for the OIDC token exchange with nuget.org
+
+jobs:
+  publish:
+    name: Pack and push to NuGet
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/csharp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Pack
+        run: |
+          dotnet pack src/SheetCompressor/SheetCompressor.csproj -c Release -o artifacts
+          dotnet pack src/SheetCompressor.Xlsx/SheetCompressor.Xlsx.csproj -c Release -o artifacts
+
+      - name: Authenticate to NuGet (Trusted Publishing)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: mythopoeic
+
+      - name: Push
+        run: >
+          dotnet nuget push "artifacts/*.nupkg"
+          --api-key "${{ steps.login.outputs.NUGET_API_KEY }}"
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
