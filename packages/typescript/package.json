@@ -1,6 +1,6 @@
 {
   "name": "sheet-compressor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Independent TypeScript implementation of the SpreadsheetLLM SheetCompressor encoding for token-efficient LLM workflows.",
   "license": "MIT",
   "type": "module",

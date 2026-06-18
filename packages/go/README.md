@@ -8,7 +8,7 @@ verified against the shared golden corpus in [`fixtures/corpus`](../../fixtures/
 ## Install
 
 ```sh
-go get github.com/mythopoeic/sheet-compressor/packages/go/sheetcompressor@v0.1.0
+go get github.com/mythopoeic/sheet-compressor/packages/go/sheetcompressor@v0.1.1
 ```
 
 ## Use

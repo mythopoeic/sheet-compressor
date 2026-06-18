@@ -9,7 +9,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>SheetCompressor</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>William Fehringer</Authors>
     <Description>Independent C# implementation of the SpreadsheetLLM SheetCompressor encoding: compact, LLM-friendly text encodings for spreadsheet grids (anchor skeleton, inverted index, format aggregation) with token estimates. No LLM calls. Not affiliated with Microsoft.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -18,7 +18,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>spreadsheet;llm;tokenization;compression;excel;spreadsheetllm;prompt-engineering</PackageTags>
-    <PackageReleaseNotes>First public release (v0.1.0). https://github.com/mythopoeic/sheet-compressor/releases/tag/v0.1.0</PackageReleaseNotes>
+    <PackageReleaseNotes>Docs: encoding + LLM prompt-usage examples. https://github.com/mythopoeic/sheet-compressor/releases/tag/v0.1.1</PackageReleaseNotes>
 
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>

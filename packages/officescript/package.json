@@ -1,6 +1,6 @@
 {
   "name": "@sheet-compressor/officescript",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Office Script (Excel Automate) port of the SheetCompressor encoding: the verified TS reference core bundled into a single .osts via a checked-in generator, plus host glue and an in-host conformance harness.",
   "license": "MIT",
