@@ -36,6 +36,62 @@ result = compress(grid)
 print(result["encodings"]["anchor"]["string"])
 ```
 
+## The three encodings
+
+The same sparse two-table sheet, in each encoding (`["string"]` shown; each group also has a JSON
+form and a `["tokenEstimate"]`). Raw baseline **100 tokens → 80 / 77 / 23**:
+
+```text
+# encodings.anchor.string  — addresses + values, empty rows dropped
+A1,Product|B1,Q1|C1,Q2|D1,Q3|E1,Q4
+A2,Apples|B2,100|C2,150|D2,200|E2,120
+A15,Region|B15,Cost|C15,Margin|D15,Profit|E15,Status
+A16,North|B16,500|C16,0.15|D16,75|E16,good
+
+# encodings.invertedIndex.string  — value → cell(s); repeats collapse (B4|D18,60)
+A1,Product
+B4|D18,60
+E16|E18,good
+
+# encodings.formatAggregation.string  — values → type over ranges
+IntNum: B2:E4,B16:B18,D16:D18
+FloatNum: C16:C18
+Text: A1:E1,A2:A4,A15:E15,A16:A18,E16:E18
+```
+
+See the [project README](https://github.com/mythopoeic/sheet-compressor#what-the-output-looks-like)
+for the complete strings.
+
+## Prompts — read the output with an LLM
+
+The shared templates load via `prompts`: reader explainers (`prompts.readers.anchor` /
+`.invertedIndex` / `.formatAggregation`), task templates (`prompts.tasks.sheetQA` /
+`.cellValueLookup` / `.tableRegionDetection`) with `{ENCODING}` / `{ADDRESS}` / `{QUESTION}`
+placeholders, and `prompts.snippets.chartDescriptor`. The library makes **no LLM calls** —
+assemble the messages and send them to any chat model. Example with Claude (`pip install anthropic`):
+
+```python
+from sheet_compressor import compress, prompts
+import anthropic
+
+result = compress(grid)
+system = prompts.readers.anchor                  # decoder -> system prompt
+user = (
+    prompts.tasks.sheetQA                        # task + data -> user message
+    .replace("{ENCODING}", result["encodings"]["anchor"]["string"])
+    .replace("{QUESTION}", "Which region had the highest profit?")
+)
+
+client = anthropic.Anthropic()                   # reads ANTHROPIC_API_KEY
+msg = client.messages.create(
+    model="claude-opus-4-8",
+    max_tokens=1024,
+    system=system,
+    messages=[{"role": "user", "content": user}],
+)
+print(msg.content[0].text)
+```
+
 ## Real tokenizer (optional)
 
 Install with `pip install sheet-compressor[tokenizer]` and pass a `tiktoken`-backed

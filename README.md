@@ -12,9 +12,12 @@ any LLM calls itself. Drop it into your own pipeline and pair it with whatever m
 
 ## What the output looks like
 
-`compress()` rewrites a sheet as compact, address-anchored text — no LLM calls. Here a sparse
-two-table sheet (two 4-row tables separated by ten empty rows) under the default
-**structural-anchor** encoding:
+`compress()` rewrites a sheet as compact, address-anchored text — no LLM calls. Take a sparse
+two-table sheet (two 4-row tables separated by ten empty rows). Here is that **same sheet** in
+each of the three encodings.
+
+**Structural-anchor skeleton** — `<A1>,<value>` tokens; fully-empty rows vanish and every value
+keeps its exact `A1`-style address. The general-purpose default.
 
 ```text
 A1,Product|B1,Q1|C1,Q2|D1,Q3|E1,Q4
@@ -26,9 +29,37 @@ A17,South|B17,400|C17,0.10|D17,40|E17,ok
 A18,East|B18,300|C18,0.20|D18,60|E18,good
 ```
 
-The ten empty rows vanish; every value keeps its exact `A1`-style address. That 20-row sheet
-drops from **100 → 23 tokens**, and the gains scale with sheet size. On the bundled 576 × 23
-sparse ledger ([`examples/`](./examples)) a single `compress()` call produces:
+**Inverted index** — one line per distinct value, listing the cell(s) that hold it; repeated
+values collapse to a single line. Wins on sparse / repetitive sheets.
+
+```text
+A1,Product
+B1,Q1
+…
+A4,Plums
+B4|D18,60
+C4,70
+D4|D16,75
+…
+E16|E18,good
+…
+```
+
+(Excerpt — the full output lists every distinct value. `B4|D18,60` means the value `60` appears
+in **both** B4 and D18; that sharing is where the savings come from.)
+
+**Format aggregation** — values are replaced by their *type* (`IntNum`, `FloatNum`, `Text`, …)
+over address ranges. Collapses large numeric blocks the hardest.
+
+```text
+IntNum: B2:E4,B16:B18,D16:D18
+FloatNum: C16:C18
+Text: A1:E1,A2:A4,A15:E15,A16:A18,E16:E18
+```
+
+That 20-row sheet goes from **100 raw tokens → 80 (anchor) / 77 (inverted) / 23 (format)**, and
+the gains scale with sheet size. On the bundled 576 × 23 sparse ledger ([`examples/`](./examples))
+a single `compress()` call produces:
 
 | encoding | tokens | vs. raw baseline (10,110) |
 | --- | --- | --- |
@@ -36,8 +67,9 @@ sparse ledger ([`examples/`](./examples)) a single `compress()` call produces:
 | inverted index | 456 | **22.2× smaller** |
 | format aggregation | 160 | **63.2× smaller** |
 
-(Numbers are reproducible from the committed fixtures and example — see [`fixtures/`](./fixtures)
-and [`examples/`](./examples).)
+Each encoding carries a `.string` (shown above), an equivalent `.json` form, and a
+`.tokenEstimate`. (Numbers are reproducible from the committed fixtures and example — see
+[`fixtures/`](./fixtures) and [`examples/`](./examples).)
 
 ## What it does
 
@@ -67,6 +99,50 @@ can render (Office Script, desktop Excel via VBA) may additionally attach a base
   the output, plus task templates (table/region detection, cell-value lookup, sheet Q&A) and
   a snippet for reading `CHART(...)` descriptors. Authored once in [`prompts/`](./prompts) and
   mirrored byte-for-byte into every language package — see [SPEC §9](./spec/SPEC.md#9-prompt-templates-shared-source).
+
+## Reading the output with an LLM
+
+The compressed string is meant to go *into a prompt*. Each package ships matching prompt
+templates so a model can decode the encoding and answer questions about the sheet:
+
+- **Reader explainers** (`prompts/readers/`) — one per encoding (`anchor`, `invertedIndex`,
+  `formatAggregation`). Each teaches the model the token format, the escaping rules, and —
+  crucially — that pruned/absent cells are **not** proof of absence. Use as the **system** prompt.
+- **Task templates** (`prompts/tasks/`) — `sheetQA` (`{ENCODING}`, `{QUESTION}`), `cellValueLookup`
+  (`{ENCODING}`, `{ADDRESS}`, `{QUESTION}`), `tableRegionDetection` (`{ENCODING}`). Fill the
+  placeholders with `string.replace` and send as the **user** message.
+- **Chart snippet** (`prompts/snippets/chartDescriptor.md`) — how to read `CHART(...)` tokens.
+
+The library makes **no LLM calls** — you assemble the messages and send them to whatever chat
+model you like. This example pairs the anchor reader with the `sheetQA` task and calls Claude
+(any chat model works — the prompts contain nothing provider-specific):
+
+```ts
+import { compress, prompts } from "sheet-compressor";
+import Anthropic from "@anthropic-ai/sdk";
+
+const { encodings } = compress(grid);
+
+// reader explainer → system (teaches the model to decode the encoding)
+// task template with placeholders filled → user message (the data + the question)
+const system = prompts.readers.anchor;
+const user = prompts.tasks.sheetQA
+  .replace("{ENCODING}", encodings.anchor.string)
+  .replace("{QUESTION}", "Which region had the highest profit?");
+
+const client = new Anthropic(); // reads ANTHROPIC_API_KEY
+const res = await client.messages.create({
+  model: "claude-opus-4-8",
+  max_tokens: 1024,
+  system,
+  messages: [{ role: "user", content: user }],
+});
+console.log(res.content.find((b) => b.type === "text")?.text);
+```
+
+Use the reader that matches the encoding you sent (`prompts.readers.invertedIndex` for the
+inverted index, and so on). Per-language prompt accessors are in each package's README. The Go
+port does not embed the templates — read them from [`prompts/`](./prompts) directly.
 
 ## Languages
 

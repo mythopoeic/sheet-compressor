@@ -35,6 +35,20 @@ fmt.Println(result.RawBaseline.TokenEstimate, "→", result.Anchor.TokenEstimate
 phase-1 detector, and a `nil` `TokenCounter` selects the SPEC §7 heuristic
 (UTF-16 code units ÷ 4, ceil).
 
+Each encoding (`Anchor`, `InvertedIndex`, `FormatAggregation`) carries a `.String`, a `.Json`,
+and a `.TokenEstimate`. See the
+[project README](https://github.com/mythopoeic/sheet-compressor#what-the-output-looks-like) for
+side-by-side examples of what each string looks like.
+
+## Reading the output with an LLM
+
+Unlike the other ports, the Go module does **not** embed the reader/task prompt templates. To
+feed the output to a model, read the templates from [`prompts/`](../../prompts) in the repo, fill
+the `{ENCODING}` / `{QUESTION}` placeholders (`strings.Replace`), and send the reader explainer
+as the system prompt with the filled task template as the user message. The
+[project README](https://github.com/mythopoeic/sheet-compressor#reading-the-output-with-an-llm)
+shows the full composition (with any chat model).
+
 ## Optional .xlsx adapter
 
 A thin [excelize](https://github.com/xuri/excelize)-backed adapter lives in
