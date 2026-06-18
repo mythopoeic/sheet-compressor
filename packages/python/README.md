@@ -1,9 +1,24 @@
 # sheet-compressor (Python)
 
-Python port of the SheetCompressor encoding from the SpreadsheetLLM paper. Pure
-core with zero required dependencies; conforms to the shared golden corpus in
+Independent Python implementation of the **SheetCompressor** encoding from the
+[SpreadsheetLLM paper](https://arxiv.org/abs/2407.09025) (Dong et al., Microsoft, 2024).
+Pure core with zero required dependencies; conforms to the shared golden corpus in
 `fixtures/corpus/`. See [`spec/SPEC.md`](../../spec/SPEC.md) for the
 language-neutral contract.
+
+> Independent, community implementation. Not affiliated with or endorsed by Microsoft.
+> Part of the multi-language
+> [`sheet-compressor`](https://github.com/mythopoeic/sheet-compressor) project.
+
+## Install
+
+```bash
+pip install sheet-compressor                 # core, zero required deps (Python >= 3.9)
+pip install "sheet-compressor[tokenizer]"    # + tiktoken-backed token counts
+pip install "sheet-compressor[xlsx]"         # + openpyxl .xlsx reader
+```
+
+## Usage
 
 ```python
 from sheet_compressor import compress
