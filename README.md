@@ -79,11 +79,10 @@ can render (Office Script, desktop Excel via VBA) may additionally attach a base
 | VBA | importable `.bas` / `.cls` | implemented; verified in-host (Excel desktop) |
 | Office Script | `.osts` | implemented; verified in-host (Excel Online) |
 
-> **Pre-release (`v0.1.0`, unpublished).** The registry names above are placeholders and are
-> **not yet published** to npm / PyPI / NuGet — for now, install those three from source
-> (clone this repo; each [`packages/<lang>/`](./packages) builds standalone). Go installs
-> directly from the public module path, and VBA / Office Script are copied from source by
-> design. See **Getting started** below.
+> **`v0.1.0`.** **TypeScript (npm) and Python (PyPI) are published** — install them
+> directly (see below). **C# (NuGet) is not yet published** — install it from source for
+> now. Go installs directly from the public module path, and VBA / Office Script are copied
+> from source by design. See **Getting started** below.
 
 ## Getting started
 
@@ -97,9 +96,7 @@ real-tokenizer adapters).
 ### TypeScript / Node — [`packages/typescript`](./packages/typescript)
 
 ```bash
-# Pre-release: install from source (the npm name is not yet published).
-npm install ./packages/typescript
-# Once published this becomes: npm install sheet-compressor
+npm install sheet-compressor
 ```
 ```ts
 import { compress } from "sheet-compressor";
@@ -125,9 +122,7 @@ const result = compress(readSheet("workbook.xlsx"));
 ### Python — [`packages/python`](./packages/python)
 
 ```bash
-# Pre-release: install from source (the PyPI name is not yet published).
-pip install ./packages/python
-# Once published this becomes: pip install sheet-compressor
+pip install sheet-compressor
 ```
 ```python
 from sheet_compressor import compress

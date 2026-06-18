@@ -11,12 +11,8 @@ interchangeable encodings plus token estimates — and makes **no LLM calls** it
 
 ## Install
 
-Pre-release: the npm name is reserved but **not yet published**. Install from source:
-
 ```bash
-# from a clone of the repo
-npm install ./packages/typescript
-# once published this becomes: npm install sheet-compressor
+npm install sheet-compressor
 ```
 
 Requires Node ≥ 20.11. The package is ESM-only and ships compiled JS + `.d.ts`.
