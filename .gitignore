@@ -39,6 +39,8 @@ __pycache__/
 
 # Transient copy made by `npm pack` prepack (see packages/typescript/package.json)
 /packages/typescript/prompts/
+# Build-time vendored copy made by the Python in-tree backend (_build_backend.py)
+/packages/python/sheet_compressor/prompts/
 
 # Local scratch artifacts from in-host testing (generated workbooks, conformance
 # run output, and non-committed example reconstructions). The committed examples

@@ -1,30 +1,58 @@
 {
   "name": "sheet-compressor",
   "version": "0.1.0",
-  "private": true,
-  "description": "TypeScript reference implementation of the SheetCompressor encoding from the SpreadsheetLLM paper.",
+  "description": "Independent TypeScript implementation of the SpreadsheetLLM SheetCompressor encoding for token-efficient LLM workflows.",
   "license": "MIT",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "default": "./src/index.ts"
-    }
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
-    "src",
-    "prompts"
+    "dist",
+    "prompts",
+    "README.md",
+    "LICENSE"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mythopoeic/sheet-compressor.git",
+    "directory": "packages/typescript"
+  },
+  "homepage": "https://github.com/mythopoeic/sheet-compressor/tree/main/packages/typescript",
+  "bugs": {
+    "url": "https://github.com/mythopoeic/sheet-compressor/issues"
+  },
+  "keywords": [
+    "spreadsheet",
+    "llm",
+    "tokenization",
+    "compression",
+    "excel",
+    "prompt-engineering",
+    "spreadsheetllm"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "build": "tsup",
     "test": "vitest run",
     "test:watch": "vitest",
     "generate-goldens": "tsx scripts/generate-goldens.ts",
-    "prepack": "node -e \"require('node:fs').cpSync('../../prompts','./prompts',{recursive:true})\"",
+    "prepack": "npm run build && node -e \"require('node:fs').cpSync('../../prompts','./prompts',{recursive:true})\"",
     "postpack": "node -e \"require('node:fs').rmSync('./prompts',{recursive:true,force:true})\""
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3",
     "vitest": "^2.1.8"
