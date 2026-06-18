@@ -10,6 +10,35 @@ any LLM calls itself. Drop it into your own pipeline and pair it with whatever m
 > This project implements only the paper's compression component. It is an independent,
 > community implementation and is not affiliated with or endorsed by Microsoft.
 
+## What the output looks like
+
+`compress()` rewrites a sheet as compact, address-anchored text — no LLM calls. Here a sparse
+two-table sheet (two 4-row tables separated by ten empty rows) under the default
+**structural-anchor** encoding:
+
+```text
+A1,Product|B1,Q1|C1,Q2|D1,Q3|E1,Q4
+A2,Apples|B2,100|C2,150|D2,200|E2,120
+A3,Pears|B3,80|C3,90|D3,110|E3,85
+A15,Region|B15,Cost|C15,Margin|D15,Profit|E15,Status
+A16,North|B16,500|C16,0.15|D16,75|E16,good
+A17,South|B17,400|C17,0.10|D17,40|E17,ok
+A18,East|B18,300|C18,0.20|D18,60|E18,good
+```
+
+The ten empty rows vanish; every value keeps its exact `A1`-style address. That 20-row sheet
+drops from **100 → 23 tokens**, and the gains scale with sheet size. On the bundled 576 × 23
+sparse ledger ([`examples/`](./examples)) a single `compress()` call produces:
+
+| encoding | tokens | vs. raw baseline (10,110) |
+| --- | --- | --- |
+| structural-anchor skeleton | 807 | **12.5× smaller** |
+| inverted index | 456 | **22.2× smaller** |
+| format aggregation | 160 | **63.2× smaller** |
+
+(Numbers are reproducible from the committed fixtures and example — see [`fixtures/`](./fixtures)
+and [`examples/`](./examples).)
+
 ## What it does
 
 Given a sheet (a grid of cell text, plus optional per-cell types and chart metadata), each
@@ -50,11 +79,11 @@ can render (Office Script, desktop Excel via VBA) may additionally attach a base
 | VBA | importable `.bas` / `.cls` | implemented; verified in-host (Excel desktop) |
 | Office Script | `.osts` | implemented; verified in-host (Excel Online) |
 
-> **Pre-release (`v0.0.0`).** The registry names above are reserved but **not yet
-> published** to npm / PyPI / NuGet — install those three from source for now
-> (clone this repo; each [`packages/<lang>/`](./packages) builds standalone). Go
-> installs directly from the public module path, and VBA / Office Script are
-> copied from source by design. See **Getting started** below.
+> **Pre-release (`v0.1.0`, unpublished).** The registry names above are placeholders and are
+> **not yet published** to npm / PyPI / NuGet — for now, install those three from source
+> (clone this repo; each [`packages/<lang>/`](./packages) builds standalone). Go installs
+> directly from the public module path, and VBA / Office Script are copied from source by
+> design. See **Getting started** below.
 
 ## Getting started
 
@@ -68,7 +97,9 @@ real-tokenizer adapters).
 ### TypeScript / Node — [`packages/typescript`](./packages/typescript)
 
 ```bash
-npm install sheet-compressor   # (until published: npm install ./packages/typescript)
+# Pre-release: install from source (the npm name is not yet published).
+npm install ./packages/typescript
+# Once published this becomes: npm install sheet-compressor
 ```
 ```ts
 import { compress } from "sheet-compressor";
@@ -94,7 +125,9 @@ const result = compress(readSheet("workbook.xlsx"));
 ### Python — [`packages/python`](./packages/python)
 
 ```bash
-pip install sheet-compressor   # (until published: pip install ./packages/python)
+# Pre-release: install from source (the PyPI name is not yet published).
+pip install ./packages/python
+# Once published this becomes: pip install sheet-compressor
 ```
 ```python
 from sheet_compressor import compress
@@ -121,8 +154,10 @@ result = compress(read_sheet("workbook.xlsx", {"sheet": "Q3"}))
 ### C# — [`packages/csharp`](./packages/csharp)
 
 ```bash
-dotnet add package SheetCompressor          # core (until published: reference the csproj)
-dotnet add package SheetCompressor.Xlsx     # optional .xlsx reader (ClosedXML)
+# Pre-release: reference the projects from source (the NuGet names are not yet published).
+dotnet add reference packages/csharp/src/SheetCompressor/SheetCompressor.csproj
+dotnet add reference packages/csharp/src/SheetCompressor.Xlsx/SheetCompressor.Xlsx.csproj   # optional .xlsx reader (ClosedXML)
+# Once published these become: dotnet add package SheetCompressor [SheetCompressor.Xlsx]
 ```
 ```csharp
 using SheetCompressor;

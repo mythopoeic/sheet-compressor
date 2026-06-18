@@ -40,6 +40,16 @@ __pycache__/
 # Transient copy made by `npm pack` prepack (see packages/typescript/package.json)
 /packages/typescript/prompts/
 
+# Local scratch artifacts from in-host testing (generated workbooks, conformance
+# run output, and non-committed example reconstructions). The committed examples
+# use the `-sparse` suffix and are NOT matched here.
+/packages/vba/*.xlsm
+/fixtures/vba-conformance-report.txt
+/examples/aetherium-576x23.xlsx
+/examples/aetherium-576x23.grid.json
+/examples/paper-figure2-example.xlsx
+/examples/paper-figure2-example.grid.json
+
 # OS / editor
 .DS_Store
 Thumbs.db
