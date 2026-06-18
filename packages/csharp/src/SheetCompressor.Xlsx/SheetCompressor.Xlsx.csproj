@@ -6,15 +6,33 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>SheetCompressor.Xlsx</RootNamespace>
     <AssemblyName>SheetCompressor.Xlsx</AssemblyName>
+
+    <!-- NuGet package metadata -->
     <PackageId>SheetCompressor.Xlsx</PackageId>
-    <Description>SheetCompressor optional .xlsx adapter (Seam 2): reads a single sheet — grid, origin, per-cell data type, embedded chart descriptors — into the SheetCompressor.Grid shape.</Description>
+    <Version>0.1.0</Version>
+    <Authors>William Fehringer</Authors>
+    <Description>Optional .xlsx adapter for SheetCompressor (ClosedXML): reads a single sheet — grid, origin, per-cell data type, and embedded chart descriptors — into the SheetCompressor.Grid shape. Not affiliated with Microsoft.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/mythopoeic/sheet-compressor</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mythopoeic/sheet-compressor.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>spreadsheet;llm;xlsx;excel;closedxml;compression;spreadsheetllm</PackageTags>
+    <PackageReleaseNotes>First public release (v0.1.0). https://github.com/mythopoeic/sheet-compressor/releases/tag/v0.1.0</PackageReleaseNotes>
+
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.105.0" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\SheetCompressor\SheetCompressor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

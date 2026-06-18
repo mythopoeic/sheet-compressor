@@ -6,12 +6,40 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>SheetCompressor</RootNamespace>
     <AssemblyName>SheetCompressor</AssemblyName>
+
+    <!-- NuGet package metadata -->
     <PackageId>SheetCompressor</PackageId>
-    <Description>SheetCompressor — compact LLM-friendly encodings for spreadsheet grids.</Description>
+    <Version>0.1.0</Version>
+    <Authors>William Fehringer</Authors>
+    <Description>Independent C# implementation of the SpreadsheetLLM SheetCompressor encoding: compact, LLM-friendly text encodings for spreadsheet grids (anchor skeleton, inverted index, format aggregation) with token estimates. No LLM calls. Not affiliated with Microsoft.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/mythopoeic/sheet-compressor</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mythopoeic/sheet-compressor.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>spreadsheet;llm;tokenization;compression;excel;spreadsheetllm;prompt-engineering</PackageTags>
+    <PackageReleaseNotes>First public release (v0.1.0). https://github.com/mythopoeic/sheet-compressor/releases/tag/v0.1.0</PackageReleaseNotes>
+
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="SharpToken" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <!-- Ship the shared prompt templates next to the assembly so PromptsLoader's
+         "sibling of the assembly" lookup (SPEC §10.2) works for installed consumers.
+         The canonical files live once at the repo root; pack them as contentFiles
+         that copy into the consumer's output, and copy them into this project's own
+         build output too (for the package's tests / local runs). -->
+    <None Include="..\..\..\..\prompts\**\*.md"
+          Link="prompts\%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToOutputDirectory="PreserveNewest"
+          Pack="true"
+          PackagePath="contentFiles\any\any\prompts\%(RecursiveDir)%(Filename)%(Extension)"
+          PackageCopyToOutput="true" />
   </ItemGroup>
 </Project>
