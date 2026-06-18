@@ -71,6 +71,30 @@ to also receive base64 images in the `images` field.
 > exposes the anchor, fill it in `extractCharts()` (in the generator's
 > `mainGlue()`).
 
+The returned `encodings` object carries all three encodings — `anchor`, `invertedIndex`,
+`formatAggregation` — each with a `string`, a `json`, and a `tokenEstimate`. See the
+[project README](https://github.com/mythopoeic/sheet-compressor#what-the-output-looks-like) for
+side-by-side examples of what each string looks like.
+
+## Reading the output with an LLM
+
+This port produces the encodings in-host; the Office Scripts sandbox can't read repo files, so it
+does **not** bundle the reader/task prompt templates. To feed the output to a model:
+
+1. Take the encoding you want from the return object — e.g. `encodings.anchor.string`.
+2. Pair it with the shared templates in [`prompts/`](../../prompts): the reader explainer for that
+   encoding (`readers/anchor.md`, `readers/invertedIndex.md`, `readers/formatAggregation.md`) as
+   the **system** prompt, and a task template (`tasks/sheetQA.md`, `tasks/cellValueLookup.md`,
+   `tasks/tableRegionDetection.md`) as the **user** message — fill the `{ENCODING}` / `{ADDRESS}` /
+   `{QUESTION}` placeholders.
+3. Send it to your model. Office Scripts can't call external APIs from the sandbox, so wire the
+   script into **Power Automate**: `main`'s return object becomes the flow input, where you build
+   the prompt and call an LLM connector (an HTTP action, Azure OpenAI, etc.). For a quick manual
+   check, copy a `.string` out and paste it under the reader + task templates in any chat model.
+
+The TypeScript port ships these templates as constants with a runnable end-to-end example — see
+the [project README](https://github.com/mythopoeic/sheet-compressor#reading-the-output-with-an-llm).
+
 ## Run the conformance harness in Excel Online (sign-off gate)
 
 The sandbox can't read repo files, so the harness embeds the corpus.

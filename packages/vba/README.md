@@ -104,6 +104,39 @@ Set g = ScCompress.NewGridFromArray(data, 1, 1)   ' origin A1
 Pass `"keep-all"` as the second argument to `Compress` to disable phase-1 anchor
 detection.
 
+`res` carries all three encodings — `res.Anchor`, `res.InvertedIndex`,
+`res.FormatAggregation` — each with a `.StringForm`, a `.JsonForm`, and a
+`.TokenEstimate`. See the [project README](https://github.com/mythopoeic/sheet-compressor#what-the-output-looks-like)
+for side-by-side examples of what each string looks like.
+
+## Reading the output with an LLM
+
+This port produces the compressed string **in-host**; unlike the TypeScript / Python / C# ports,
+it does **not** bundle the reader/task prompt templates. To feed the output to a model:
+
+1. Take the encoding you want — e.g. `res.Anchor.StringForm`.
+2. Pair it with the shared templates in [`prompts/`](../../prompts): the reader explainer for that
+   encoding (`readers/anchor.md`, `readers/invertedIndex.md`, `readers/formatAggregation.md`) as
+   the **system** text, and a task template (`tasks/sheetQA.md`, `tasks/cellValueLookup.md`,
+   `tasks/tableRegionDetection.md`) as the **user** message — substitute the `{ENCODING}` /
+   `{ADDRESS}` / `{QUESTION}` placeholders with `Replace$`.
+3. Send the two messages to your model. Desktop VBA can POST to an LLM's HTTP API directly via
+   `MSXML2.ServerXMLHTTP` / `WinHttp.WinHttpRequest`, or you can copy the string out and call the
+   model from another tool.
+
+```vba
+' reader explainer -> system text; task template (placeholders filled) -> user message
+Dim system As String, user As String
+system = ScHost.ReadUtf8File("..\..\prompts\readers\anchor.md")          ' or paste the text inline
+user = ScHost.ReadUtf8File("..\..\prompts\tasks\sheetQA.md")
+user = Replace$(user, "{ENCODING}", res.Anchor.StringForm)
+user = Replace$(user, "{QUESTION}", "Which region had the highest profit?")
+' POST { system, user } to your chat model's API (MSXML2.ServerXMLHTTP) and read the reply
+```
+
+The TypeScript port ships these templates as constants and includes a runnable end-to-end example
+— see the [project README](https://github.com/mythopoeic/sheet-compressor#reading-the-output-with-an-llm).
+
 ## Running the conformance harness
 
 1. Import the modules into a workbook (above). Saving it inside `packages/vba/`
