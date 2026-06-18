@@ -72,17 +72,17 @@ can render (Office Script, desktop Excel via VBA) may additionally attach a base
 
 | Language | Package | Status |
 | --- | --- | --- |
-| TypeScript / Node | `sheet-compressor` (npm) | reference implementation; 288 tests |
-| Python | `sheet-compressor` (PyPI) → `import sheet_compressor` | implemented; verified vs corpus |
-| C# | `SheetCompressor` (NuGet) | implemented; verified vs corpus |
-| Go | `github.com/mythopoeic/sheet-compressor/packages/go/...` | implemented; verified vs corpus |
+| TypeScript / Node | `sheet-compressor` (npm) | **published** · reference implementation; 288 tests |
+| Python | `sheet-compressor` (PyPI) → `import sheet_compressor` | **published** · verified vs corpus |
+| C# | `SheetCompressor` (NuGet) | verified vs corpus; NuGet publish pending |
+| Go | `github.com/mythopoeic/sheet-compressor/packages/go/...` | **tagged `v0.1.0`** · verified vs corpus |
 | VBA | importable `.bas` / `.cls` | implemented; verified in-host (Excel desktop) |
 | Office Script | `.osts` | implemented; verified in-host (Excel Online) |
 
-> **`v0.1.0`.** **TypeScript (npm) and Python (PyPI) are published** — install them
-> directly (see below). **C# (NuGet) is not yet published** — install it from source for
-> now. Go installs directly from the public module path, and VBA / Office Script are copied
-> from source by design. See **Getting started** below.
+> **[`v0.1.0`](https://github.com/mythopoeic/sheet-compressor/releases/tag/v0.1.0).**
+> **TypeScript (npm), Python (PyPI), and Go are published** — install them directly (see
+> below). **C# (NuGet) is not yet published** — install it from source for now. VBA /
+> Office Script are copied from source by design. See **Getting started** below.
 
 ## Getting started
 
@@ -180,7 +180,7 @@ var result = Compressor.Compress(XlsxReader.ReadSheetFile("workbook.xlsx"));
 ### Go — [`packages/go`](./packages/go)
 
 ```bash
-go get github.com/mythopoeic/sheet-compressor/packages/go/sheetcompressor
+go get github.com/mythopoeic/sheet-compressor/packages/go/sheetcompressor@v0.1.0
 ```
 ```go
 import "github.com/mythopoeic/sheet-compressor/packages/go/sheetcompressor"
