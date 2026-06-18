@@ -1,6 +1,6 @@
 # Prompts
 
-Shared prompt-template source. Each language package mirrors these files byte-for-byte and exposes them as constants. See [SPEC §9](../spec/SPEC.md#9-prompt-templates-shared-source) for the contract.
+Shared prompt-template source. Each language package mirrors these files byte-for-byte and exposes them as constants. See [SPEC §10](../spec/SPEC.md#10-prompt-templates-shared-source) for the contract.
 
 ## Layout
 

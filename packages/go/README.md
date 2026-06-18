@@ -1,4 +1,4 @@
-# sheet-compressor (Go port)
+# sheet-compressor (Go)
 
 Go implementation of the [`sheet-compressor`](../../README.md) compression core.
 Pure stdlib — no third-party dependencies in the default build. The

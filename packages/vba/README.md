@@ -1,4 +1,4 @@
-# sheet-compressor — VBA port
+# sheet-compressor (VBA)
 
 A faithful hand-port of the SpreadsheetLLM **SheetCompressor** encoding core into
 importable VBA modules, plus Excel host glue and a conformance harness. It

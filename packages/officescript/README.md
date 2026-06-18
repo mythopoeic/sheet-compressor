@@ -1,4 +1,4 @@
-# SheetCompressor — Office Script port
+# sheet-compressor (Office Script)
 
 Office Script (Excel Automate) implementation of the
 [SheetCompressor](../../spec/SPEC.md) encoding.

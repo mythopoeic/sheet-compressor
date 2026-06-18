@@ -98,7 +98,7 @@ can render (Office Script, desktop Excel via VBA) may additionally attach a base
 - **Prompt templates included.** Per-encoding "reader" prompts that teach an LLM to decode
   the output, plus task templates (table/region detection, cell-value lookup, sheet Q&A) and
   a snippet for reading `CHART(...)` descriptors. Authored once in [`prompts/`](./prompts) and
-  mirrored byte-for-byte into every language package — see [SPEC §9](./spec/SPEC.md#9-prompt-templates-shared-source).
+  mirrored byte-for-byte into every language package — see [SPEC §10](./spec/SPEC.md#10-prompt-templates-shared-source).
 
 ## Reading the output with an LLM
 
